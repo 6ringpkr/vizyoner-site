@@ -208,7 +208,7 @@ async function handleFetch(request) {
 }
 
 // Handle push notifications
-self.addEventListener('push', (event) => {
+self.addEventListener('push_old', (event) => {
   console.log('📨 Push notification received');
   
   let notificationData = {
@@ -249,6 +249,48 @@ self.addEventListener('push', (event) => {
       console.error('Error parsing push data:', error);
     }
   }
+  async function subscribeToPush() {
+    if (!('serviceWorker' in navigator)) return;
+    const registration = await navigator.serviceWorker.ready;
+    if (!('PushManager' in window)) {
+        showToast('Push notifications not supported in this browser.', 'error');
+        return;
+    }
+    try {
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            // Replace with your VAPID public key (Base64 URL-encoded)
+            applicationServerKey: '<YOUR_PUBLIC_VAPID_KEY>'
+        });
+        // Send subscription to your server here!
+        console.log('Push subscription:', JSON.stringify(subscription));
+        showToast('Push notifications enabled!', 'success');
+    } catch (err) {
+        showToast('Push subscription failed.', 'error');
+        console.error('Push subscription error:', err);
+    }
+}
+
+// Call this after service worker registration and permission granted
+// Example: Notification.requestPermission().then(permission => { if (permission === 'granted') subscribeToPush(); });
+
+
+self.addEventListener('push', function(event) {
+  let data = {};
+  if (event.data) {
+    data = event.data.json();
+  }
+  const title = data.title || 'New Notification';
+  const options = {
+    body: data.body || 'You have a new message.',
+    icon: 'icons/icon-192.png',
+    badge: 'icons/icon-192.png',
+    data: data
+  };
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
   
   event.waitUntil(
     self.registration.showNotification(notificationData.title, notificationData)
