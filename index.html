@@ -363,6 +363,10 @@
                     <span class="material-icons">save</span>
                     <span>Save & Connect</span>
                 </button>
+                <button id="sendHeartbeatBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium mt-6 flex items-center space-x-2">
+                    <span class="material-icons">favorite</span>
+                    <span>Send Heartbeat Notification</span>
+                </button>
             </div>
         </div>
         
@@ -486,6 +490,34 @@
             username: '',
             password: ''
         };
+
+        // ...existing code...
+
+        // Heartbeat notification trigger
+        document.addEventListener('DOMContentLoaded', () => {
+            // ...existing code...
+            const heartbeatBtn = document.getElementById('sendHeartbeatBtn');
+            if (heartbeatBtn) {
+                heartbeatBtn.addEventListener('click', async () => {
+                    heartbeatBtn.disabled = true;
+                    heartbeatBtn.textContent = 'Sending...';
+                    try {
+                        // Replace '/api/heartbeat' with your backend endpoint
+                        const res = await fetch('/api/heartbeat', { method: 'POST' });
+                        if (res.ok) {
+                            showToast('Heartbeat notification sent!', 'success');
+                        } else {
+                            showToast('Failed to send heartbeat.', 'error');
+                        }
+                    } catch (err) {
+                        showToast('Error sending heartbeat.', 'error');
+                    }
+                    heartbeatBtn.disabled = false;
+                    heartbeatBtn.textContent = 'Send Heartbeat Notification';
+                });
+            }
+            // ...existing code...
+        });
         
         // Initialize app
         function init() {
@@ -531,7 +563,7 @@
                 });
             }
         }
-        
+
         function setupInstallPrompt() {
             // Check PWA criteria
             checkPWACriteria();
@@ -1297,6 +1329,7 @@ ${notification.content || notification.message || 'No content available'}
             if ('Notification' in window && Notification.permission === 'default') {
                 Notification.requestPermission().then(permission => {
                     if (permission === 'granted') {
+                        subscribeToPush();
                         showToast('Notifications enabled!', 'success');
                     }
                 });
@@ -1401,6 +1434,7 @@ ${notification.content || notification.message || 'No content available'}
             console.error('💥 Unhandled promise rejection:', e.reason);
             showToast('An error occurred. Please refresh the page.', 'error');
         });
+        
     </script>
 </body>
 </html>

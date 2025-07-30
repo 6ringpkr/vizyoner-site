@@ -260,8 +260,9 @@ self.addEventListener('push_old', (event) => {
         const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
             // Replace with your VAPID public key (Base64 URL-encoded)
-            applicationServerKey: '<YOUR_PUBLIC_VAPID_KEY>'
+            applicationServerKey: 'BGAq623vEDEL-ISsEZZRJyBVOssH6iVUmil3S0R3pr6qBTKq_3S5FFr99Plg9DIF8268XLbW0ss0RzK00afmTXA'
         });
+        console.log('VAPID public key accepted');
         // Send subscription to your server here!
         console.log('Push subscription:', JSON.stringify(subscription));
         showToast('Push notifications enabled!', 'success');
