@@ -1,14 +1,12 @@
-// Minimal Service Worker for PWA Installation
-const CACHE_NAME = 'notification-viewer-v2.1.0';
-const STATIC_CACHE = 'static-cache-v2.1.0';
+// Service Worker for Morph Messaging PWA with Push Notifications
+const CACHE_NAME = 'morph-messaging-v2.2.0';
+const STATIC_CACHE = 'static-cache-v2.2.0';
 
-// Essential files to cache for offline functionality
 // Essential files to cache for offline functionality
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/browserconfig.xml',
   // Critical icons for offline functionality
   '/icons/android/android-launchericon-192-192.png',
   '/icons/android/android-launchericon-512-512.png',
@@ -142,14 +140,41 @@ async function handleFetch(request) {
             <title>Offline - Morph Messaging</title>
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <style>
-              body { font-family: system-ui; text-align: center; padding: 2rem; }
-              .offline { color: #666; }
+              body { 
+                font-family: system-ui; 
+                text-align: center; 
+                padding: 2rem; 
+                max-width: 400px; 
+                margin: 0 auto;
+                background: #f8fafc;
+              }
+              .offline { 
+                color: #666; 
+                margin: 2rem 0;
+              }
+              .icon {
+                font-size: 4rem;
+                margin-bottom: 1rem;
+              }
+              button {
+                background: #3b82f6;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+              }
+              button:hover {
+                background: #2563eb;
+              }
             </style>
           </head>
           <body>
-            <h1>📡 Offline</h1>
-            <p class="offline">You're currently offline. Please check your connection and try again.</p>
-            <button onclick="location.reload()">🔄 Retry</button>
+            <div class="icon">📡</div>
+            <h1>You're Offline</h1>
+            <p class="offline">No internet connection detected. Please check your network and try again.</p>
+            <button onclick="location.reload()">🔄 Retry Connection</button>
           </body>
           </html>
         `, {
@@ -208,21 +233,37 @@ async function handleFetch(request) {
 }
 
 // Handle push notifications
-self.addEventListener('push_old', (event) => {
+self.addEventListener('push', (event) => {
   console.log('📨 Push notification received');
   
   let notificationData = {
     title: 'Morph Messaging',
     body: 'New notification received',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-96.png',
+    icon: '/icons/android/android-launchericon-192-192.png',
+    badge: '/icons/android/android-launchericon-96-96.png',
     tag: 'default',
-    data: {}
+    data: {},
+    actions: [
+      {
+        action: 'open',
+        title: '👁️ View',
+        icon: '/icons/android/android-launchericon-96-96.png'
+      },
+      {
+        action: 'dismiss',
+        title: '❌ Dismiss',
+        icon: '/icons/android/android-launchericon-96-96.png'
+      }
+    ],
+    requireInteraction: false,
+    silent: false
   };
   
   if (event.data) {
     try {
       const data = event.data.json();
+      console.log('📨 Push data:', data);
+      
       notificationData = {
         ...notificationData,
         title: data.title || notificationData.title,
@@ -230,68 +271,41 @@ self.addEventListener('push_old', (event) => {
         icon: data.icon || notificationData.icon,
         tag: data.tag || `notification-${Date.now()}`,
         data: data,
-        actions: [
-          {
-            action: 'open',
-            title: '👁️ View',
-            icon: '/icons/icon-96.png'
-          },
-          {
-            action: 'dismiss',
-            title: '❌ Dismiss',
-            icon: '/icons/icon-96.png'
-          }
-        ],
         requireInteraction: data.priority === 'high',
         silent: data.priority === 'low'
       };
+      
+      // Add status-specific styling
+      if (data.status) {
+        const statusConfig = {
+          'new': { 
+            badge: '/icons/android/android-launchericon-96-96.png',
+            vibrate: [200, 100, 200]
+          },
+          'pending': { 
+            badge: '/icons/android/android-launchericon-96-96.png',
+            vibrate: [300, 100, 300, 100, 300]
+          },
+          'approved': { 
+            badge: '/icons/android/android-launchericon-96-96.png',
+            vibrate: [100]
+          },
+          'rejected': { 
+            badge: '/icons/android/android-launchericon-96-96.png',
+            vibrate: [500, 200, 500]
+          }
+        };
+        
+        const config = statusConfig[data.status];
+        if (config) {
+          Object.assign(notificationData, config);
+        }
+      }
+      
     } catch (error) {
       console.error('Error parsing push data:', error);
     }
   }
-  async function subscribeToPush() {
-    if (!('serviceWorker' in navigator)) return;
-    const registration = await navigator.serviceWorker.ready;
-    if (!('PushManager' in window)) {
-        showToast('Push notifications not supported in this browser.', 'error');
-        return;
-    }
-    try {
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            // Replace with your VAPID public key (Base64 URL-encoded)
-            applicationServerKey: 'BGAq623vEDEL-ISsEZZRJyBVOssH6iVUmil3S0R3pr6qBTKq_3S5FFr99Plg9DIF8268XLbW0ss0RzK00afmTXA'
-        });
-        console.log('VAPID public key accepted');
-        // Send subscription to your server here!
-        console.log('Push subscription:', JSON.stringify(subscription));
-        showToast('Push notifications enabled!', 'success');
-    } catch (err) {
-        showToast('Push subscription failed.', 'error');
-        console.error('Push subscription error:', err);
-    }
-}
-
-// Call this after service worker registration and permission granted
-// Example: Notification.requestPermission().then(permission => { if (permission === 'granted') subscribeToPush(); });
-
-
-self.addEventListener('push', function(event) {
-  let data = {};
-  if (event.data) {
-    data = event.data.json();
-  }
-  const title = data.title || 'New Notification';
-  const options = {
-    body: data.body || 'You have a new message.',
-    icon: 'icons/icon-192.png',
-    badge: 'icons/icon-192.png',
-    data: data
-  };
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
-});
   
   event.waitUntil(
     self.registration.showNotification(notificationData.title, notificationData)
@@ -341,6 +355,24 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
+// Handle notification close
+self.addEventListener('notificationclose', (event) => {
+  console.log('🔔 Notification closed:', event.notification.tag);
+  
+  // Optional: Send analytics or perform cleanup
+  if (event.notification.data && event.notification.data.notificationId) {
+    // Could send a message to the main app about notification dismissal
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage({
+          type: 'NOTIFICATION_DISMISSED',
+          notificationId: event.notification.data.notificationId
+        });
+      });
+    });
+  }
+});
+
 // Handle messages from main thread
 self.addEventListener('message', (event) => {
   // Ignore extension messages and other non-app messages
@@ -366,9 +398,108 @@ self.addEventListener('message', (event) => {
       });
       break;
       
+    case 'CLEAR_CACHE':
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => caches.delete(cacheName))
+        );
+      }).then(() => {
+        event.ports[0]?.postMessage({ success: true });
+      });
+      break;
+      
     default:
       console.log('Unknown message type:', type);
   }
+});
+
+// Background sync for offline actions (if supported)
+if ('sync' in self.registration) {
+  self.addEventListener('sync', (event) => {
+    console.log('🔄 Background sync triggered:', event.tag);
+    
+    if (event.tag === 'notification-response') {
+      event.waitUntil(syncNotificationResponses());
+    }
+  });
+}
+
+async function syncNotificationResponses() {
+  try {
+    // Get pending responses from IndexedDB or localStorage
+    const clients = await self.clients.matchAll();
+    clients.forEach(client => {
+      client.postMessage({
+        type: 'SYNC_NOTIFICATION_RESPONSES'
+      });
+    });
+  } catch (error) {
+    console.error('Background sync failed:', error);
+  }
+}
+
+// Periodic background sync (if supported)
+if ('periodicSync' in self.registration) {
+  self.addEventListener('periodicsync', (event) => {
+    console.log('⏰ Periodic sync triggered:', event.tag);
+    
+    if (event.tag === 'heartbeat') {
+      event.waitUntil(performHeartbeat());
+    }
+  });
+}
+
+async function performHeartbeat() {
+  try {
+    // Send heartbeat to server or perform maintenance tasks
+    console.log('💓 Performing background heartbeat');
+    
+    // Notify clients about heartbeat
+    const clients = await self.clients.matchAll();
+    clients.forEach(client => {
+      client.postMessage({
+        type: 'BACKGROUND_HEARTBEAT',
+        timestamp: new Date().toISOString()
+      });
+    });
+  } catch (error) {
+    console.error('Background heartbeat failed:', error);
+  }
+}
+
+// Handle push subscription changes
+self.addEventListener('pushsubscriptionchange', (event) => {
+  console.log('📱 Push subscription changed');
+  
+  event.waitUntil(
+    self.registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: 'BGAq623vEDEL-ISsEZZRJyBVOssH6iVUmil3S0R3pr6qBTKq_3S5FFr99Plg9DIF8268XLbW0ss0RzK00afmTXA'
+    }).then(subscription => {
+      console.log('📱 New push subscription created');
+      
+      // Send new subscription to server
+      return fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(subscription)
+      });
+    }).then(() => {
+      // Notify clients about subscription change
+      return self.clients.matchAll();
+    }).then(clients => {
+      clients.forEach(client => {
+        client.postMessage({
+          type: 'PUSH_SUBSCRIPTION_CHANGED',
+          message: 'Push subscription renewed'
+        });
+      });
+    }).catch(error => {
+      console.error('Failed to renew push subscription:', error);
+    })
+  );
 });
 
 // Global error handling
@@ -380,4 +511,102 @@ self.addEventListener('unhandledrejection', (event) => {
   console.error('💥 Unhandled promise rejection in SW:', event.reason);
 });
 
-console.log('🚀 Service Worker script loaded - v' + CACHE_NAME);
+// Utility functions for notifications
+function createNotificationFromMQTT(mqttData) {
+  const statusConfig = {
+    'new': {
+      icon: '🆕',
+      color: '#3b82f6',
+      urgency: 'normal'
+    },
+    'pending': {
+      icon: '⏳',
+      color: '#f59e0b',
+      urgency: 'high'
+    },
+    'approved': {
+      icon: '✅',
+      color: '#10b981',
+      urgency: 'low'
+    },
+    'rejected': {
+      icon: '❌',
+      color: '#ef4444',
+      urgency: 'normal'
+    }
+  };
+  
+  const config = statusConfig[mqttData.status] || statusConfig['new'];
+  
+  return {
+    title: `${config.icon} ${mqttData.title || 'Job Order Update'}`,
+    body: `Job #${mqttData.jobOrderId || 'N/A'}: ${mqttData.content || mqttData.message || 'Status updated'}`,
+    icon: '/icons/android/android-launchericon-192-192.png',
+    badge: '/icons/android/android-launchericon-96-96.png',
+    tag: `job-${mqttData.jobOrderId || Date.now()}`,
+    data: mqttData,
+    actions: mqttData.status === 'pending' || mqttData.status === 'new' ? [
+      {
+        action: 'approve',
+        title: '✅ Approve',
+        icon: '/icons/android/android-launchericon-96-96.png'
+      },
+      {
+        action: 'reject',
+        title: '❌ Reject',
+        icon: '/icons/android/android-launchericon-96-96.png'
+      },
+      {
+        action: 'view',
+        title: '👁️ View',
+        icon: '/icons/android/android-launchericon-96-96.png'
+      }
+    ] : [
+      {
+        action: 'view',
+        title: '👁️ View',
+        icon: '/icons/android/android-launchericon-96-96.png'
+      }
+    ],
+    requireInteraction: mqttData.priority === 'high',
+    silent: mqttData.priority === 'low',
+    vibrate: mqttData.priority === 'high' ? [300, 100, 300, 100, 300] : [100, 50, 100]
+  };
+}
+
+// Cache management utilities
+function cleanupOldCaches() {
+  return caches.keys().then(cacheNames => {
+    const oldCaches = cacheNames.filter(name => 
+      name.startsWith('morph-messaging-') && 
+      name !== CACHE_NAME && 
+      name !== STATIC_CACHE
+    );
+    
+    return Promise.all(
+      oldCaches.map(cacheName => {
+        console.log('🗑️ Removing old cache:', cacheName);
+        return caches.delete(cacheName);
+      })
+    );
+  });
+}
+
+// Network status detection
+function isOnline() {
+  return navigator.onLine;
+}
+
+// Log service worker lifecycle
+console.log('🚀 Service Worker script loaded - ' + CACHE_NAME);
+
+// Performance monitoring
+let installStart = performance.now();
+self.addEventListener('install', () => {
+  console.log(`⚡ Service Worker install took ${performance.now() - installStart}ms`);
+});
+
+let activateStart = performance.now();
+self.addEventListener('activate', () => {
+  console.log(`⚡ Service Worker activate took ${performance.now() - activateStart}ms`);
+});

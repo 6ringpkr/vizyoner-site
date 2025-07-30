@@ -11,36 +11,6 @@
     <meta name="apple-mobile-web-app-title" content="Morph Messaging">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
-    <!-- Apple Touch Icons using your existing iOS icons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/ios/180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="/icons/ios/167.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/icons/ios/152.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/icons/ios/144.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/icons/ios/120.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/icons/ios/114.png">
-    <link rel="apple-touch-icon" sizes="100x100" href="/icons/ios/100.png">
-    <link rel="apple-touch-icon" sizes="87x87" href="/icons/ios/87.png">
-    <link rel="apple-touch-icon" sizes="80x80" href="/icons/ios/80.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/icons/ios/76.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/icons/ios/72.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/icons/ios/60.png">
-    <link rel="apple-touch-icon" sizes="58x58" href="/icons/ios/58.png">
-    <link rel="apple-touch-icon" sizes="57x57" href="/icons/ios/57.png">
-    <link rel="apple-touch-icon" href="/icons/ios/180.png">
-    
-    <!-- iOS Status Bar and Viewport -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="format-detection" content="telephone=no">
-    
-    <!-- Windows Metro Tile Colors -->
-    <meta name="msapplication-TileColor" content="#2563EB">
-    <meta name="msapplication-TileImage" content="/icons/windows11/Square150x150Logo.scale-200.png">
-    <meta name="msapplication-config" content="/browserconfig.xml">
-    
-    <!-- Standard Favicons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/icons/ios/32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/icons/ios/16.png">
-    <link rel="shortcut icon" href="/icons/ios/32.png">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -98,42 +68,52 @@
             50% { opacity: 0.7; transform: scale(1.1); }
         }
         
-        /* PWA title bar */
-        @media (display-mode: window-controls-overlay) {
-            body {
-                padding-top: env(titlebar-area-height);
-            }
-            
-            .titlebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: env(titlebar-area-height);
-                background: #2563eb;
-                display: flex;
-                align-items: center;
-                padding: 0 16px;
-                z-index: 1000;
-                -webkit-app-region: drag;
-                color: white;
-                font-size: 14px;
-                font-weight: 500;
-            }
+        /* Status-specific card styling */
+        .status-new {
+            border-left: 4px solid #3b82f6;
+            background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
         }
         
-        /* Touch-friendly improvements */
-        .touch-target {
-            min-height: 44px;
-            min-width: 44px;
+        .status-pending {
+            border-left: 4px solid #f59e0b;
+            background: linear-gradient(135deg, #fef3c7 0%, #f8fafc 100%);
         }
         
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
+        .status-approved {
+            border-left: 4px solid #10b981;
+            background: linear-gradient(135deg, #d1fae5 0%, #f8fafc 100%);
         }
         
-        /* Custom scrollbar for webkit browsers */
+        .status-rejected {
+            border-left: 4px solid #ef4444;
+            background: linear-gradient(135deg, #fee2e2 0%, #f8fafc 100%);
+        }
+        
+        /* Priority indicators */
+        .priority-high::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .priority-medium::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            background: #f59e0b;
+            border-radius: 50%;
+        }
+        
+        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -150,15 +130,25 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        
+        /* Touch-friendly improvements */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+        
+        /* Notification card hover effects */
+        .notification-card {
+            transition: all 0.2s ease;
+        }
+        
+        .notification-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
-    <!-- PWA Title Bar -->
-    <div class="titlebar hidden">
-        <span class="material-icons mr-2">notifications</span>
-        Morph Messaging
-    </div>
-    
     <!-- Install Banner -->
     <div id="installBanner" class="hidden bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 relative slide-up">
         <div class="flex items-center justify-between max-w-4xl mx-auto">
@@ -219,6 +209,10 @@
                     <span class="material-icons text-lg">settings</span>
                     <span class="font-medium">Config</span>
                 </button>
+                <button class="nav-btn flex items-center space-x-2 px-4 py-3 text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-200 whitespace-nowrap touch-target" data-page="test">
+                    <span class="material-icons text-lg">bug_report</span>
+                    <span class="font-medium">Test</span>
+                </button>
                 <button class="nav-btn flex items-center space-x-2 px-4 py-3 text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-200 whitespace-nowrap touch-target" data-page="about">
                     <span class="material-icons text-lg">info</span>
                     <span class="font-medium">About</span>
@@ -229,7 +223,7 @@
     
     <!-- Status Bar -->
     <div class="bg-white mx-4 mt-4 rounded-xl shadow-sm border p-4">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <div class="text-center">
                 <div class="flex items-center justify-center space-x-2 mb-1">
                     <div id="connectionStatusDot" class="w-3 h-3 bg-red-500 rounded-full pulse-dot"></div>
@@ -250,6 +244,13 @@
                     <span class="text-sm font-medium text-gray-600">Pending</span>
                 </div>
                 <p id="pendingCount" class="text-lg font-bold text-orange-600">0</p>
+            </div>
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-1">
+                    <span class="material-icons text-gray-500 text-sm">check_circle</span>
+                    <span class="text-sm font-medium text-gray-600">Approved</span>
+                </div>
+                <p id="approvedCount" class="text-lg font-bold text-green-600">0</p>
             </div>
             <div class="text-center">
                 <div class="flex items-center justify-center space-x-2 mb-1">
@@ -287,7 +288,6 @@
                 <p class="text-gray-600">Browse and search through past notifications</p>
             </div>
             
-            <!-- Search and Filter -->
             <div class="bg-white rounded-xl shadow-sm border p-4 mb-6">
                 <div class="flex flex-col sm:flex-row gap-4">
                     <div class="flex-1">
@@ -300,6 +300,7 @@
                     <div class="sm:w-48">
                         <select id="statusFilter" class="w-full py-3 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">All Status</option>
+                            <option value="new">New</option>
                             <option value="pending">Pending</option>
                             <option value="approved">Approved</option>
                             <option value="rejected">Rejected</option>
@@ -363,10 +364,128 @@
                     <span class="material-icons">save</span>
                     <span>Save & Connect</span>
                 </button>
-                <button id="sendHeartbeatBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium mt-6 flex items-center space-x-2">
+            </div>
+        </div>
+        
+        <!-- Test Page -->
+        <div id="testPage" class="page hidden mt-6">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Push Notification Tester</h2>
+                <p class="text-gray-600">Test push notifications and simulate different scenarios</p>
+            </div>
+            
+            <!-- Push Notification Status -->
+            <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Push Notification Status</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="text-center">
+                        <div id="pushPermissionStatus" class="w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-red-100">
+                            <span class="material-icons text-red-600">notifications_off</span>
+                        </div>
+                        <p class="text-sm font-medium text-gray-700">Permission</p>
+                        <p id="pushPermissionText" class="text-xs text-gray-500">Denied</p>
+                    </div>
+                    <div class="text-center">
+                        <div id="pushServiceWorkerStatus" class="w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-red-100">
+                            <span class="material-icons text-red-600">build</span>
+                        </div>
+                        <p class="text-sm font-medium text-gray-700">Service Worker</p>
+                        <p id="pushServiceWorkerText" class="text-xs text-gray-500">Not Ready</p>
+                    </div>
+                    <div class="text-center">
+                        <div id="pushSubscriptionStatus" class="w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-red-100">
+                            <span class="material-icons text-red-600">link_off</span>
+                        </div>
+                        <p class="text-sm font-medium text-gray-700">Subscription</p>
+                        <p id="pushSubscriptionText" class="text-xs text-gray-500">Not Subscribed</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button id="requestPermissionBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2">
+                        <span class="material-icons">notifications</span>
+                        <span>Request Permission</span>
+                    </button>
+                    <button id="subscribePushBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2" disabled>
+                        <span class="material-icons">link</span>
+                        <span>Subscribe to Push</span>
+                    </button>
+                    <button id="unsubscribePushBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2" disabled>
+                        <span class="material-icons">link_off</span>
+                        <span>Unsubscribe</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Test Notifications -->
+            <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Test Notifications</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <button onclick="testMockNotification('new')" class="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 transition-colors text-left">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-blue-600">fiber_new</span>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">New Job Order</p>
+                                <p class="text-sm text-gray-500">Simulate new notification</p>
+                            </div>
+                        </div>
+                    </button>
+                    
+                    <button onclick="testMockNotification('pending')" class="p-4 border-2 border-yellow-200 rounded-lg hover:border-yellow-400 transition-colors text-left">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-yellow-600">pending</span>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">Pending Review</p>
+                                <p class="text-sm text-gray-500">Simulate pending notification</p>
+                            </div>
+                        </div>
+                    </button>
+                    
+                    <button onclick="testMockNotification('approved')" class="p-4 border-2 border-green-200 rounded-lg hover:border-green-400 transition-colors text-left">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-green-600">check_circle</span>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">Approved</p>
+                                <p class="text-sm text-gray-500">Simulate approved notification</p>
+                            </div>
+                        </div>
+                    </button>
+                    
+                    <button onclick="testMockNotification('rejected')" class="p-4 border-2 border-red-200 rounded-lg hover:border-red-400 transition-colors text-left">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                <span class="material-icons text-red-600">cancel</span>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">Rejected</p>
+                                <p class="text-sm text-gray-500">Simulate rejected notification</p>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+                
+                <button id="sendHeartbeatBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-medium flex items-center justify-center space-x-2">
                     <span class="material-icons">favorite</span>
-                    <span>Send Heartbeat Notification</span>
+                    <span>Send Heartbeat Push Notification</span>
                 </button>
+            </div>
+            
+            <!-- VAPID Info -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">VAPID Configuration</h3>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 mb-2">Public Key:</p>
+                    <code class="text-xs bg-white p-2 rounded border block break-all">BGAq623vEDEL-ISsEZZRJyBVOssH6iVUmil3S0R3pr6qBTKq_3S5FFr99Plg9DIF8268XLbW0ss0RzK00afmTXA</code>
+                </div>
+                <div id="subscriptionInfo" class="mt-4 hidden">
+                    <p class="text-sm text-gray-600 mb-2">Current Subscription:</p>
+                    <textarea id="subscriptionDisplay" class="w-full h-32 text-xs bg-gray-50 p-3 rounded border" readonly></textarea>
+                </div>
             </div>
         </div>
         
@@ -384,6 +503,10 @@
                         Features
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center space-x-3">
+                            <span class="material-icons text-green-500">check_circle</span>
+                            <span class="text-gray-700">Data persistence</span>
+                        </div>
                         <div class="flex items-center space-x-3">
                             <span class="material-icons text-green-500">check_circle</span>
                             <span class="text-gray-700">Real-time MQTT notifications</span>
@@ -409,6 +532,7 @@
                             <span class="text-gray-700">Data persistence</span>
                         </div>
                     </div>
+                    </div>
                 </div>
                 
                 <div class="bg-white rounded-xl shadow-sm border p-6">
@@ -419,7 +543,7 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-gray-600">Version:</span>
-                            <span class="font-medium">2.1.0</span>
+                            <span class="font-medium">2.2.0</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">Build Date:</span>
@@ -435,27 +559,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="bg-white rounded-xl shadow-sm border p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <span class="material-icons mr-2">install_mobile</span>
-                        Installation Guide
-                    </h3>
-                    <div class="space-y-4">
-                        <div>
-                            <h4 class="font-medium text-gray-900 mb-2">📱 Mobile Devices</h4>
-                            <p class="text-gray-600 text-sm">Open in your browser and tap "Add to Home Screen" from the browser menu.</p>
-                        </div>
-                        <div>
-                            <h4 class="font-medium text-gray-900 mb-2">💻 Desktop</h4>
-                            <p class="text-gray-600 text-sm">Click the install button in your browser's address bar or use the install banner.</p>
-                        </div>
-                        <div>
-                            <h4 class="font-medium text-gray-900 mb-2">🪟 Windows</h4>
-                            <p class="text-gray-600 text-sm">Install from Microsoft Edge for full system integration and window controls.</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </main>
@@ -463,7 +566,7 @@
     <!-- Toast Container -->
     <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
     
-    <!-- Bottom Sheet for Mobile Actions (Hidden by default) -->
+    <!-- Bottom Sheet for Mobile Actions -->
     <div id="actionSheet" class="fixed inset-x-0 bottom-0 bg-white rounded-t-2xl shadow-2xl border-t transform translate-y-full transition-transform duration-300 z-50 hidden">
         <div class="p-4">
             <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4"></div>
@@ -482,6 +585,7 @@
         let notifications = [];
         let currentPage = 'live';
         let deferredPrompt = null;
+        let pushSubscription = null;
         let mqttConfig = {
             broker: 'wss://broker.emqx.io:8084/mqtt',
             topic: 'notifications/joborders',
@@ -491,33 +595,8 @@
             password: ''
         };
 
-        // ...existing code...
-
-        // Heartbeat notification trigger
-        document.addEventListener('DOMContentLoaded', () => {
-            // ...existing code...
-            const heartbeatBtn = document.getElementById('sendHeartbeatBtn');
-            if (heartbeatBtn) {
-                heartbeatBtn.addEventListener('click', async () => {
-                    heartbeatBtn.disabled = true;
-                    heartbeatBtn.textContent = 'Sending...';
-                    try {
-                        // Replace '/api/heartbeat' with your backend endpoint
-                        const res = await fetch('/api/heartbeat', { method: 'POST' });
-                        if (res.ok) {
-                            showToast('Heartbeat notification sent!', 'success');
-                        } else {
-                            showToast('Failed to send heartbeat.', 'error');
-                        }
-                    } catch (err) {
-                        showToast('Error sending heartbeat.', 'error');
-                    }
-                    heartbeatBtn.disabled = false;
-                    heartbeatBtn.textContent = 'Send Heartbeat Notification';
-                });
-            }
-            // ...existing code...
-        });
+        // VAPID public key for push notifications
+        const VAPID_PUBLIC_KEY = 'BGAq623vEDEL-ISsEZZRJyBVOssH6iVUmil3S0R3pr6qBTKq_3S5FFr99Plg9DIF8268XLbW0ss0RzK00afmTXA';
         
         // Initialize app
         function init() {
@@ -531,6 +610,9 @@
             
             // Register service worker first
             registerServiceWorker();
+            
+            // Setup push notifications
+            checkPushNotificationStatus();
             
             // Delay MQTT connection slightly to ensure UI is ready
             setTimeout(() => {
@@ -564,163 +646,286 @@
             }
         }
 
-        function setupInstallPrompt() {
-            // Check PWA criteria
-            checkPWACriteria();
+        // Push Notification Functions
+        async function checkPushNotificationStatus() {
+            updatePushStatus();
             
-            // Set up beforeinstallprompt listener
-            window.addEventListener('beforeinstallprompt', handleInstallPrompt);
-            
-            // Check if already installed
-            if (window.matchMedia('(display-mode: standalone)').matches || 
-                window.navigator.standalone === true) {
-                console.log('📱 App already installed');
+            if (!('serviceWorker' in navigator)) {
+                console.warn('Service Worker not supported');
                 return;
             }
             
-            // Show install banner if criteria met and not dismissed recently
-            setTimeout(checkInstallAvailability, 2000);
-        }
-        
-        function handleInstallPrompt(e) {
-            console.log('📱 Install prompt triggered');
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            // Show install banner
-            showInstallBanner();
-            
-            // Log that the prompt is available
-            console.log('📱 Install prompt stored, banner shown');
-        }
-        
-        function checkPWACriteria() {
-            const criteria = {
-                serviceWorker: 'serviceWorker' in navigator,
-                manifest: document.querySelector('link[rel="manifest"]') !== null,
-                https: location.protocol === 'https:' || location.hostname === 'localhost',
-                icons: true, // Assuming icons are present
-                startUrl: true // We have a start URL in manifest
-            };
-            
-            console.log('🔍 PWA Criteria Check:', criteria);
-            
-            const allMet = Object.values(criteria).every(Boolean);
-            console.log('✅ All PWA criteria met:', allMet);
-            
-            if (!allMet) {
-                console.warn('⚠️ Some PWA criteria not met. Install button may not appear.');
-            }
-            
-            return allMet;
-        }
-        
-        // Debug function to check PWA installation status
-        function debugPWAStatus() {
-            const status = {
-                isStandalone: window.matchMedia('(display-mode: standalone)').matches,
-                isAppleStandalone: window.navigator.standalone === true,
-                hasServiceWorker: 'serviceWorker' in navigator,
-                hasManifest: document.querySelector('link[rel="manifest"]') !== null,
-                isHTTPS: location.protocol === 'https:' || location.hostname === 'localhost',
-                hasBeforeInstallPrompt: deferredPrompt !== null,
-                userAgent: navigator.userAgent,
-                displayMode: window.matchMedia('(display-mode: standalone)').matches ? 'standalone' : 'browser'
-            };
-            
-            console.group('🔍 PWA Installation Debug Status');
-            console.table(status);
-            console.groupEnd();
-            
-            // Show in UI for debugging
-            if (currentPage === 'about') {
-                const debugDiv = document.createElement('div');
-                debugDiv.className = 'bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4';
-                debugDiv.innerHTML = `
-                    <h4 class="font-semibold text-yellow-800 mb-2">🔍 PWA Debug Status</h4>
-                    <div class="text-sm space-y-1">
-                        ${Object.entries(status).map(([key, value]) => 
-                            `<div><strong>${key}:</strong> ${value}</div>`
-                        ).join('')}
-                    </div>
-                    <button onclick="this.parentElement.remove()" class="mt-2 text-yellow-600 hover:text-yellow-800 text-sm">
-                        Close Debug Info
-                    </button>
-                `;
-                
-                const aboutContent = document.querySelector('#aboutPage .space-y-6');
-                if (aboutContent) {
-                    aboutContent.appendChild(debugDiv);
-                }
-            }
-            
-            return status;
-        }
-        
-        // Add debug button to about page
-        function addDebugButton() {
-            const aboutPage = document.getElementById('aboutPage');
-            if (aboutPage && !aboutPage.querySelector('.debug-button')) {
-                const debugButton = document.createElement('button');
-                debugButton.className = 'debug-button w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium mt-4';
-                debugButton.textContent = '🔍 Debug PWA Status';
-                debugButton.onclick = debugPWAStatus;
-                
-                const lastSection = aboutPage.querySelector('.space-y-6 > div:last-child');
-                if (lastSection) {
-                    lastSection.appendChild(debugButton);
-                }
-            }
-        }
-        
-        // Install prompt handling
-        function checkInstallAvailability() {
-            // Check if already installed
-            if (window.matchMedia('(display-mode: standalone)').matches || 
-                window.navigator.standalone === true) {
-                console.log('📱 App already installed');
+            if (!('PushManager' in window)) {
+                console.warn('Push messaging not supported');
                 return;
             }
             
-            // Check if install was previously dismissed
-            const dismissed = localStorage.getItem('installBannerDismissed');
-            const dismissedTime = localStorage.getItem('installBannerDismissedTime');
-            
-            // Show again after 7 days
-            if (dismissed && dismissedTime) {
-                const daysSinceDismissed = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60 * 24);
-                if (daysSinceDismissed < 7) {
-                    console.log('📱 Install banner dismissed recently, not showing');
-                    return;
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager.getSubscription();
+                
+                if (subscription) {
+                    pushSubscription = subscription;
+                    console.log('📱 Existing push subscription found');
+                    
+                    // Send subscription to server
+                    await sendSubscriptionToServer(subscription);
                 }
+                
+                updatePushStatus();
+            } catch (error) {
+                console.error('❌ Error checking push subscription:', error);
+            }
+        }
+        
+        function updatePushStatus() {
+            // Permission status
+            const permissionStatus = Notification.permission;
+            const permissionElement = document.getElementById('pushPermissionStatus');
+            const permissionText = document.getElementById('pushPermissionText');
+            
+            if (permissionStatus === 'granted') {
+                permissionElement.className = 'w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-green-100';
+                permissionElement.innerHTML = '<span class="material-icons text-green-600">notifications</span>';
+                permissionText.textContent = 'Granted';
+            } else if (permissionStatus === 'denied') {
+                permissionElement.className = 'w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-red-100';
+                permissionElement.innerHTML = '<span class="material-icons text-red-600">notifications_off</span>';
+                permissionText.textContent = 'Denied';
+            } else {
+                permissionElement.className = 'w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-yellow-100';
+                permissionElement.innerHTML = '<span class="material-icons text-yellow-600">notifications_none</span>';
+                permissionText.textContent = 'Default';
             }
             
-            // Show install banner
-            showInstallBanner();
+            // Service Worker status
+            const swStatus = document.getElementById('pushServiceWorkerStatus');
+            const swText = document.getElementById('pushServiceWorkerText');
+            
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                swStatus.className = 'w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-green-100';
+                swStatus.innerHTML = '<span class="material-icons text-green-600">build</span>';
+                swText.textContent = 'Ready';
+            } else {
+                swStatus.className = 'w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-red-100';
+                swStatus.innerHTML = '<span class="material-icons text-red-600">build</span>';
+                swText.textContent = 'Not Ready';
+            }
+            
+            // Subscription status
+            const subStatus = document.getElementById('pushSubscriptionStatus');
+            const subText = document.getElementById('pushSubscriptionText');
+            
+            if (pushSubscription) {
+                subStatus.className = 'w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-green-100';
+                subStatus.innerHTML = '<span class="material-icons text-green-600">link</span>';
+                subText.textContent = 'Subscribed';
+                
+                // Show subscription details
+                document.getElementById('subscriptionInfo').classList.remove('hidden');
+                document.getElementById('subscriptionDisplay').value = JSON.stringify(pushSubscription, null, 2);
+            } else {
+                subStatus.className = 'w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-red-100';
+                subStatus.innerHTML = '<span class="material-icons text-red-600">link_off</span>';
+                subText.textContent = 'Not Subscribed';
+                
+                document.getElementById('subscriptionInfo').classList.add('hidden');
+            }
+            
+            // Update button states
+            const requestBtn = document.getElementById('requestPermissionBtn');
+            const subscribeBtn = document.getElementById('subscribePushBtn');
+            const unsubscribeBtn = document.getElementById('unsubscribePushBtn');
+            
+            requestBtn.disabled = permissionStatus === 'granted';
+            subscribeBtn.disabled = !(permissionStatus === 'granted' && !pushSubscription);
+            unsubscribeBtn.disabled = !pushSubscription;
         }
         
-        function showInstallBanner() {
-            const banner = document.getElementById('installBanner');
-            banner.classList.remove('hidden');
-            console.log('📱 Install banner shown');
+        async function requestNotificationPermission() {
+            if (!('Notification' in window)) {
+                showToast('Notifications not supported in this browser', 'error');
+                return;
+            }
+            
+            try {
+                const permission = await Notification.requestPermission();
+                
+                if (permission === 'granted') {
+                    showToast('Notification permission granted!', 'success');
+                } else {
+                    showToast('Notification permission denied', 'error');
+                }
+                
+                updatePushStatus();
+            } catch (error) {
+                console.error('❌ Error requesting permission:', error);
+                showToast('Error requesting permission', 'error');
+            }
         }
         
-        function dismissInstallBanner() {
-            const banner = document.getElementById('installBanner');
-            banner.classList.add('hidden');
-            localStorage.setItem('installBannerDismissed', 'true');
-            localStorage.setItem('installBannerDismissedTime', Date.now().toString());
-            console.log('📱 Install banner dismissed');
+        async function subscribeToPush() {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                showToast('Push notifications not supported', 'error');
+                return;
+            }
+            
+            if (Notification.permission !== 'granted') {
+                showToast('Please grant notification permission first', 'error');
+                return;
+            }
+            
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                });
+                
+                pushSubscription = subscription;
+                console.log('📱 Push subscription created:', subscription);
+                
+                // Send subscription to server
+                await sendSubscriptionToServer(subscription);
+                
+                updatePushStatus();
+                showToast('Successfully subscribed to push notifications!', 'success');
+                
+            } catch (error) {
+                console.error('❌ Push subscription failed:', error);
+                showToast('Failed to subscribe to push notifications', 'error');
+            }
         }
         
-        // PWA install handling
-        window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('📱 Install prompt available');
-            e.preventDefault();
-            deferredPrompt = e;
-            showInstallBanner();
-        });
+        async function unsubscribeFromPush() {
+            if (!pushSubscription) {
+                showToast('No active subscription found', 'error');
+                return;
+            }
+            
+            try {
+                await pushSubscription.unsubscribe();
+                pushSubscription = null;
+                
+                updatePushStatus();
+                showToast('Successfully unsubscribed from push notifications', 'success');
+                
+            } catch (error) {
+                console.error('❌ Push unsubscription failed:', error);
+                showToast('Failed to unsubscribe from push notifications', 'error');
+            }
+        }
         
+        async function sendSubscriptionToServer(subscription) {
+            try {
+                const response = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(subscription)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Subscription sent to server');
+                } else {
+                    console.warn('⚠️ Failed to send subscription to server');
+                }
+            } catch (error) {
+                console.warn('⚠️ Could not send subscription to server:', error);
+                // Don't show error to user as this might be expected in development
+            }
+        }
+        
+        async function sendHeartbeat() {
+            const btn = document.getElementById('sendHeartbeatBtn');
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-icons animate-pulse">favorite</span><span>Sending...</span>';
+            
+            try {
+                const response = await fetch('/api/heartbeat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    showToast('Heartbeat notification sent!', 'success');
+                } else {
+                    showToast('Failed to send heartbeat notification', 'error');
+                }
+            } catch (error) {
+                console.error('❌ Heartbeat error:', error);
+                showToast('Error sending heartbeat notification', 'error');
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+        
+        // Test mock notifications
+        function testMockNotification(status) {
+            const mockNotifications = {
+                new: {
+                    title: 'New Job Order Received',
+                    content: 'A new job order #JO-2024-001 has been submitted and requires your attention.',
+                    jobOrderId: 'JO-2024-001',
+                    priority: 'high',
+                    status: 'new'
+                },
+                pending: {
+                    title: 'Job Order Pending Review',
+                    content: 'Job order #JO-2024-002 is awaiting your review and approval.',
+                    jobOrderId: 'JO-2024-002',
+                    priority: 'medium',
+                    status: 'pending'
+                },
+                approved: {
+                    title: 'Job Order Approved',
+                    content: 'Job order #JO-2024-003 has been approved and is now active.',
+                    jobOrderId: 'JO-2024-003',
+                    priority: 'low',
+                    status: 'approved'
+                },
+                rejected: {
+                    title: 'Job Order Rejected',
+                    content: 'Job order #JO-2024-004 has been rejected due to incomplete information.',
+                    jobOrderId: 'JO-2024-004',
+                    priority: 'medium',
+                    status: 'rejected'
+                }
+            };
+            
+            const mockData = mockNotifications[status];
+            if (mockData) {
+                // Simulate MQTT message
+                const message = JSON.stringify(mockData);
+                handleIncomingNotification('test/topic', message);
+                
+                showToast(`Test ${status} notification created!`, 'success');
+            }
+        }
+        
+        // Utility function to convert VAPID key
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+            
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
         // Navigation
         function showPage(page) {
             console.log('📄 Switching to page:', page);
@@ -752,6 +957,8 @@
                 displayHistoryNotifications();
             } else if (page === 'about') {
                 updateAboutInfo();
+            } else if (page === 'test') {
+                updatePushStatus();
             }
         }
         
@@ -892,7 +1099,7 @@
                 // Add metadata
                 notification.id = Date.now() + Math.random();
                 notification.timestamp = new Date().toISOString();
-                notification.status = notification.status || 'pending';
+                notification.status = notification.status || 'new';
                 
                 // Add to notifications array
                 notifications.unshift(notification);
@@ -979,27 +1186,53 @@
         function createNotificationCard(notification) {
             const date = new Date(notification.timestamp);
             const timeAgo = getTimeAgo(date);
-            const priorityColors = {
-                'high': 'border-l-red-500 bg-red-50',
-                'medium': 'border-l-yellow-500 bg-yellow-50',
-                'low': 'border-l-blue-500 bg-blue-50'
-            };
-            const priorityClass = priorityColors[notification.priority?.toLowerCase()] || 'border-l-blue-500 bg-blue-50';
             
-            const statusColors = {
-                'pending': 'bg-yellow-100 text-yellow-800',
-                'approved': 'bg-green-100 text-green-800',
-                'rejected': 'bg-red-100 text-red-800'
+            // Improved status-based styling
+            const statusConfig = {
+                'new': {
+                    class: 'status-new',
+                    badge: 'bg-blue-100 text-blue-800',
+                    icon: 'fiber_new',
+                    iconColor: 'text-blue-600'
+                },
+                'pending': {
+                    class: 'status-pending',
+                    badge: 'bg-yellow-100 text-yellow-800',
+                    icon: 'pending',
+                    iconColor: 'text-yellow-600'
+                },
+                'approved': {
+                    class: 'status-approved',
+                    badge: 'bg-green-100 text-green-800',
+                    icon: 'check_circle',
+                    iconColor: 'text-green-600'
+                },
+                'rejected': {
+                    class: 'status-rejected',
+                    badge: 'bg-red-100 text-red-800',
+                    icon: 'cancel',
+                    iconColor: 'text-red-600'
+                }
             };
-            const statusClass = statusColors[notification.status] || 'bg-gray-100 text-gray-800';
+            
+            const config = statusConfig[notification.status] || statusConfig['new'];
+            
+            // Priority class for visual indicator
+            const priorityClass = notification.priority === 'high' ? 'priority-high' : 
+                                 notification.priority === 'medium' ? 'priority-medium' : '';
             
             return `
-                <div class="bg-white rounded-xl shadow-sm border border-l-4 ${priorityClass} p-4 hover:shadow-md transition-shadow">
+                <div class="notification-card bg-white rounded-xl shadow-sm border ${config.class} ${priorityClass} p-4 relative">
                     <div class="flex items-start justify-between mb-3">
-                        <h3 class="text-lg font-semibold text-gray-900 flex-1 pr-2">
-                            ${notification.title || 'Job Order Notification'}
-                        </h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${statusClass}">
+                        <div class="flex items-center space-x-3 flex-1">
+                            <div class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center">
+                                <span class="material-icons ${config.iconColor}">${config.icon}</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 flex-1">
+                                ${notification.title || 'Job Order Notification'}
+                            </h3>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium ${config.badge}">
                             ${notification.status.toUpperCase()}
                         </span>
                     </div>
@@ -1024,7 +1257,7 @@
                     </div>
                     
                     <div class="flex flex-wrap gap-2">
-                        ${notification.status === 'pending' ? `
+                        ${(notification.status === 'pending' || notification.status === 'new') ? `
                             <button onclick="respondToNotification('${notification.id}', 'approved')" 
                                 class="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors touch-target">
                                 <span class="material-icons text-sm">check</span>
@@ -1126,7 +1359,7 @@ ${notification.content || notification.message || 'No content available'}
                     Received: ${new Date(notification.timestamp).toLocaleString()}
                     ${notification.respondedAt ? `<br>Responded: ${new Date(notification.respondedAt).toLocaleString()}` : ''}
                 </div>
-                ${notification.status === 'pending' ? `
+                ${(notification.status === 'pending' || notification.status === 'new') ? `
                     <div class="flex space-x-3 mb-4">
                         <button onclick="respondToNotification('${notification.id}', 'approved'); hideActionSheet()" 
                             class="flex-1 flex items-center justify-center space-x-2 bg-green-600 text-white py-3 rounded-lg font-medium">
@@ -1163,10 +1396,12 @@ ${notification.content || notification.message || 'No content available'}
         // Utility functions
         function updateCounts() {
             const total = notifications.length;
-            const pending = notifications.filter(n => n.status === 'pending').length;
+            const pending = notifications.filter(n => n.status === 'pending' || n.status === 'new').length;
+            const approved = notifications.filter(n => n.status === 'approved').length;
             
             document.getElementById('totalNotifications').textContent = total;
             document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
         }
         
         function updateLastUpdated() {
@@ -1197,9 +1432,6 @@ ${notification.content || notification.message || 'No content available'}
             if (window.matchMedia('(display-mode: standalone)').matches) pwaFeatures.push('Standalone Mode');
             
             document.getElementById('pwaSupport').textContent = pwaFeatures.length > 0 ? pwaFeatures.join(', ') : 'Limited';
-            
-            // Add debug button
-            addDebugButton();
         }
         
         function getTimeAgo(date) {
@@ -1253,8 +1485,8 @@ ${notification.content || notification.message || 'No content available'}
             if ('Notification' in window && Notification.permission === 'granted') {
                 new Notification(notification.title || 'New Job Order', {
                     body: `Job Order #${notification.jobOrderId || 'N/A'}: ${notification.content || notification.message || 'New notification'}`,
-                    icon: 'icons/icon-192.png',
-                    badge: 'icons/icon-192.png',
+                    icon: '/icons/android/android-launchericon-192-192.png',
+                    badge: '/icons/android/android-launchericon-96-96.png',
                     tag: `notification-${notification.id}`,
                     data: { notificationId: notification.id },
                     requireInteraction: notification.priority === 'high'
@@ -1288,6 +1520,38 @@ ${notification.content || notification.message || 'No content available'}
                     console.error('❌ Error loading saved notifications:', error);
                 }
             }
+        }
+
+        // Install prompt handling
+        function setupInstallPrompt() {
+            // Handle beforeinstallprompt
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('📱 Install prompt available');
+                e.preventDefault();
+                deferredPrompt = e;
+                showInstallBanner();
+            });
+            
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches || 
+                window.navigator.standalone === true) {
+                console.log('📱 App already installed');
+                return;
+            }
+        }
+        
+        function showInstallBanner() {
+            const banner = document.getElementById('installBanner');
+            banner.classList.remove('hidden');
+            console.log('📱 Install banner shown');
+        }
+        
+        function dismissInstallBanner() {
+            const banner = document.getElementById('installBanner');
+            banner.classList.add('hidden');
+            localStorage.setItem('installBannerDismissed', 'true');
+            localStorage.setItem('installBannerDismissedTime', Date.now().toString());
+            console.log('📱 Install banner dismissed');
         }
         
         // Event listeners
@@ -1325,39 +1589,11 @@ ${notification.content || notification.message || 'No content available'}
             document.getElementById('searchInput').addEventListener('input', displayHistoryNotifications);
             document.getElementById('statusFilter').addEventListener('change', displayHistoryNotifications);
             
-            // Request notification permission
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        subscribeToPush();
-                        showToast('Notifications enabled!', 'success');
-                    }
-                });
-            }
-            
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey || e.metaKey) {
-                    switch (e.key) {
-                        case '1':
-                            e.preventDefault();
-                            showPage('live');
-                            break;
-                        case '2':
-                            e.preventDefault();
-                            showPage('history');
-                            break;
-                        case '3':
-                            e.preventDefault();
-                            showPage('config');
-                            break;
-                        case '4':
-                            e.preventDefault();
-                            showPage('about');
-                            break;
-                    }
-                }
-            });
+            // Push notification buttons
+            document.getElementById('requestPermissionBtn').addEventListener('click', requestNotificationPermission);
+            document.getElementById('subscribePushBtn').addEventListener('click', subscribeToPush);
+            document.getElementById('unsubscribePushBtn').addEventListener('click', unsubscribeFromPush);
+            document.getElementById('sendHeartbeatBtn').addEventListener('click', sendHeartbeat);
             
             // Handle PWA installation
             window.addEventListener('appinstalled', () => {
@@ -1404,7 +1640,7 @@ ${notification.content || notification.message || 'No content available'}
                 const diff = touchStartX - touchEndX;
                 
                 if (Math.abs(diff) > swipeThreshold) {
-                    const pages = ['live', 'history', 'config', 'about'];
+                    const pages = ['live', 'history', 'config', 'test', 'about'];
                     const currentIndex = pages.indexOf(currentPage);
                     
                     if (diff > 0 && currentIndex < pages.length - 1) {
@@ -1416,6 +1652,34 @@ ${notification.content || notification.message || 'No content available'}
                     }
                 }
             }
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    switch (e.key) {
+                        case '1':
+                            e.preventDefault();
+                            showPage('live');
+                            break;
+                        case '2':
+                            e.preventDefault();
+                            showPage('history');
+                            break;
+                        case '3':
+                            e.preventDefault();
+                            showPage('config');
+                            break;
+                        case '4':
+                            e.preventDefault();
+                            showPage('test');
+                            break;
+                        case '5':
+                            e.preventDefault();
+                            showPage('about');
+                            break;
+                    }
+                }
+            });
         }
         
         // Initialize when DOM is loaded
