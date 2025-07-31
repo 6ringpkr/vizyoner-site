@@ -180,6 +180,599 @@
             background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
             border-color: #10b981;
         }
+
+        /* Enhanced Focus Indicators - Accessibility Improvement */
+        .nav-btn:focus,
+        button:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* Enhanced Empty States - UX Improvement */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #64748b;
+        }
+
+        .empty-state-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-description {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .empty-state-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Improved Color Contrast - Accessibility Enhancement */
+        .text-gray-500 {
+            color: #6b7280 !important; /* Original */
+        }
+
+        .text-gray-600 {
+            color: #4b5563 !important; /* Enhanced contrast */
+        }
+
+        /* Enhanced Button States */
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid #d1d5db;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .btn-secondary:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* Loading States Enhancement */
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Enhanced Toast Notifications */
+        .toast {
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid;
+        }
+
+        .toast-success {
+            border-left-color: #10b981;
+        }
+
+        .toast-error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-info {
+            border-left-color: #3b82f6;
+        }
+
+        .toast-warning {
+            border-left-color: #f59e0b;
+        }
+
+
+
+        /* Scattered Button Grid */
+        .scattered-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .scattered-btn {
+            min-height: 3.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scattered-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .scattered-btn:hover::before {
+            left: 100%;
+        }
+
+        .scattered-btn.primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .scattered-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .scattered-btn.secondary {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        .scattered-btn.secondary:hover {
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .scattered-btn.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .scattered-btn.success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .scattered-btn.danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .scattered-btn.danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .scattered-btn.warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .scattered-btn.warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Mobile-Optimized Button Groups */
+        .mobile-button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 1rem;
+        }
+
+        .mobile-btn {
+            min-height: 3.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            width: 0.5rem;
+            height: 0.5rem;
+            border-right: 2px solid currentColor;
+            border-top: 2px solid currentColor;
+            transform: translateY(-50%) rotate(45deg);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-btn:hover::after {
+            transform: translateY(-50%) rotate(45deg) translateX(2px);
+        }
+
+        .mobile-btn.primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .mobile-btn.primary:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .mobile-btn.secondary {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #374151;
+            border: 2px solid #d1d5db;
+        }
+
+        .mobile-btn.secondary:hover {
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            transform: translateX(4px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Button Layout */
+        @media (min-width: 768px) {
+            .scattered-buttons {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+
+            .mobile-button-group {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .mobile-btn {
+                flex: 1;
+                min-width: 200px;
+            }
+        }
+
+        /* Touch Target Enhancement */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+            padding: 0.75rem 1rem;
+        }
+
+        /* Button Loading States */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Enhanced Focus States for Accessibility */
+        .scattered-btn:focus,
+        .mobile-btn:focus,
+        .floating-action-btn:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
+            border-radius: inherit;
+        }
+
+        /* Button Ripple Effect */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .ripple:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Enhanced Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 4rem;
+            z-index: 30;
+        }
+
+        .tab-navigation::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 1rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn.active {
+            color: #3b82f6;
+            background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: #374151;
+            background: #f9fafb;
+        }
+
+        .tab-btn:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: -2px;
+        }
+
+        /* Enhanced Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f3f4f6;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-card.success::before {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+
+        .summary-card.warning::before {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .summary-card.danger::before {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .summary-card.info::before {
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .summary-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .summary-card.success .summary-icon {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #059669;
+        }
+
+        .summary-card.warning .summary-icon {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #d97706;
+        }
+
+        .summary-card.danger .summary-icon {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #dc2626;
+        }
+
+        .summary-card.info .summary-icon {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #2563eb;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: #111827;
+        }
+
+        .summary-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .summary-change {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .summary-change.positive {
+            color: #059669;
+        }
+
+        .summary-change.negative {
+            color: #dc2626;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tab-navigation {
+                top: 3.5rem;
+            }
+
+            .tab-btn {
+                min-width: 100px;
+                padding: 0.875rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .summary-card {
+                padding: 1rem;
+            }
+
+            .summary-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -222,76 +815,107 @@
                         <div id="mqttStatusDot" class="w-3 h-3 bg-red-500 rounded-full pulse-dot"></div>
                         <span id="mqttStatusText" class="text-sm font-medium text-gray-700">Disconnected</span>
                     </div>
+                    <button onclick="showHelpModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Help">
+                        <span class="material-icons text-gray-600">help</span>
+                    </button>
                 </div>
             </div>
         </div>
     </header>
     
     <!-- Navigation -->
-    <nav class="bg-white border-b sticky top-16 z-30">
-        <div class="max-w-4xl mx-auto">
-            <div class="flex overflow-x-auto scrollbar-hide">
-                <button class="nav-btn flex items-center space-x-2 px-4 py-3 text-blue-600 border-b-2 border-blue-600 whitespace-nowrap touch-target" data-page="live">
-                    <span class="material-icons text-lg">wifi_tethering</span>
-                    <span class="font-medium">Live</span>
+    <nav class="tab-navigation">
+        <div class="max-w-4xl mx-auto w-full">
+            <div class="flex">
+                <button class="tab-btn active" data-page="live">
+                    <span class="material-icons">wifi_tethering</span>
+                    <span>Live</span>
                 </button>
-                <button class="nav-btn flex items-center space-x-2 px-4 py-3 text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-200 whitespace-nowrap touch-target" data-page="history">
-                    <span class="material-icons text-lg">history</span>
-                    <span class="font-medium">History</span>
+                <button class="tab-btn" data-page="history">
+                    <span class="material-icons">history</span>
+                    <span>History</span>
                 </button>
-                <button class="nav-btn flex items-center space-x-2 px-4 py-3 text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-200 whitespace-nowrap touch-target" data-page="config">
-                    <span class="material-icons text-lg">settings</span>
-                    <span class="font-medium">Config</span>
+                <button class="tab-btn" data-page="config">
+                    <span class="material-icons">settings</span>
+                    <span>Config</span>
                 </button>
-                <button class="nav-btn flex items-center space-x-2 px-4 py-3 text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-200 whitespace-nowrap touch-target" data-page="test">
-                    <span class="material-icons text-lg">bug_report</span>
-                    <span class="font-medium">Test</span>
+                <button class="tab-btn" data-page="test">
+                    <span class="material-icons">bug_report</span>
+                    <span>Test</span>
                 </button>
-                <button class="nav-btn flex items-center space-x-2 px-4 py-3 text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-200 whitespace-nowrap touch-target" data-page="about">
-                    <span class="material-icons text-lg">info</span>
-                    <span class="font-medium">About</span>
+                <button class="tab-btn" data-page="settings">
+                    <span class="material-icons">settings</span>
+                    <span>Settings</span>
+                </button>
+                <button class="tab-btn" data-page="about">
+                    <span class="material-icons">info</span>
+                    <span>About</span>
                 </button>
             </div>
         </div>
     </nav>
     
-    <!-- Status Bar -->
-    <div class="bg-white mx-4 mt-4 rounded-xl shadow-sm border p-4">
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            <div class="text-center">
-                <div class="flex items-center justify-center space-x-2 mb-1">
-                    <div id="connectionStatusDot" class="w-3 h-3 bg-red-500 rounded-full pulse-dot"></div>
-                    <span class="text-sm font-medium text-gray-600">Connection</span>
+    <!-- Summary Dashboard -->
+    <div class="max-w-4xl mx-auto px-4 mt-4">
+        <div class="summary-grid">
+            <div class="summary-card info">
+                <div class="summary-icon">
+                    <span class="material-icons">wifi_tethering</span>
                 </div>
-                <p id="connectionStatus" class="text-lg font-bold text-gray-900">Disconnected</p>
+                <div class="summary-value" id="connectionStatus">Disconnected</div>
+                <div class="summary-label">Connection Status</div>
+                <div class="summary-change">
+                    <div id="connectionStatusDot" class="w-2 h-2 bg-red-500 rounded-full pulse-dot"></div>
+                    <span>MQTT Broker</span>
+                </div>
             </div>
-            <div class="text-center">
-                <div class="flex items-center justify-center space-x-2 mb-1">
-                    <span class="material-icons text-gray-500 text-sm">notifications</span>
-                    <span class="text-sm font-medium text-gray-600">Total</span>
+            
+            <div class="summary-card success">
+                <div class="summary-icon">
+                    <span class="material-icons">notifications</span>
                 </div>
-                <p id="totalNotifications" class="text-lg font-bold text-blue-600">0</p>
+                <div class="summary-value" id="totalNotifications">0</div>
+                <div class="summary-label">Total Notifications</div>
+                <div class="summary-change positive">
+                    <span class="material-icons text-sm">trending_up</span>
+                    <span>Real-time</span>
+                </div>
             </div>
-            <div class="text-center">
-                <div class="flex items-center justify-center space-x-2 mb-1">
-                    <span class="material-icons text-gray-500 text-sm">pending</span>
-                    <span class="text-sm font-medium text-gray-600">Pending</span>
+            
+            <div class="summary-card warning">
+                <div class="summary-icon">
+                    <span class="material-icons">pending</span>
                 </div>
-                <p id="pendingCount" class="text-lg font-bold text-orange-600">0</p>
+                <div class="summary-value" id="pendingCount">0</div>
+                <div class="summary-label">Pending Review</div>
+                <div class="summary-change">
+                    <span class="material-icons text-sm">schedule</span>
+                    <span>Awaiting</span>
+                </div>
             </div>
-            <div class="text-center">
-                <div class="flex items-center justify-center space-x-2 mb-1">
-                    <span class="material-icons text-gray-500 text-sm">check_circle</span>
-                    <span class="text-sm font-medium text-gray-600">Approved</span>
+            
+            <div class="summary-card success">
+                <div class="summary-icon">
+                    <span class="material-icons">check_circle</span>
                 </div>
-                <p id="approvedCount" class="text-lg font-bold text-green-600">0</p>
+                <div class="summary-value" id="approvedCount">0</div>
+                <div class="summary-label">Approved</div>
+                <div class="summary-change positive">
+                    <span class="material-icons text-sm">verified</span>
+                    <span>Completed</span>
+                </div>
             </div>
-            <div class="text-center">
-                <div class="flex items-center justify-center space-x-2 mb-1">
-                    <span class="material-icons text-gray-500 text-sm">access_time</span>
-                    <span class="text-sm font-medium text-gray-600">Updated</span>
+            
+            <div class="summary-card info">
+                <div class="summary-icon">
+                    <span class="material-icons">access_time</span>
                 </div>
-                <p id="lastUpdated" class="text-sm font-medium text-gray-700">Never</p>
+                <div class="summary-value" id="lastUpdated">Never</div>
+                <div class="summary-label">Last Updated</div>
+                <div class="summary-change">
+                    <span class="material-icons text-sm">update</span>
+                    <span>Live</span>
+                </div>
             </div>
         </div>
     </div>
@@ -305,12 +929,22 @@
                 <p class="text-gray-600">Real-time job order notifications from MQTT broker</p>
             </div>
             <div id="liveNotifications" class="space-y-4">
-                <div class="text-center py-12">
-                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="material-icons text-gray-400 text-3xl">wifi_tethering</span>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <span class="material-icons text-3xl">wifi_tethering</span>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">No notifications yet</h3>
-                    <p class="text-gray-500">Waiting for incoming notifications from the MQTT broker...</p>
+                    <h3 class="empty-state-title">No notifications yet</h3>
+                    <p class="empty-state-description">Waiting for incoming notifications from the MQTT broker. Make sure your MQTT connection is configured and active.</p>
+                    <div class="mobile-button-group">
+                        <button onclick="showPage('config')" class="mobile-btn primary ripple">
+                            <span>Configure MQTT</span>
+                            <span class="material-icons">settings</span>
+                        </button>
+                        <button onclick="testMockNotification('new')" class="mobile-btn secondary ripple">
+                            <span>Test Notification</span>
+                            <span class="material-icons">bug_report</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -344,12 +978,22 @@
             </div>
             
             <div id="historyNotifications" class="space-y-4">
-                <div class="text-center py-12">
-                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="material-icons text-gray-400 text-3xl">history</span>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <span class="material-icons text-3xl">history</span>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">No history yet</h3>
-                    <p class="text-gray-500">Notification history will appear here once you start receiving notifications</p>
+                    <h3 class="empty-state-title">No history yet</h3>
+                    <p class="empty-state-description">Notification history will appear here once you start receiving notifications. Check the Live page to see real-time notifications.</p>
+                    <div class="mobile-button-group">
+                        <button onclick="showPage('live')" class="mobile-btn primary ripple">
+                            <span>View Live</span>
+                            <span class="material-icons">wifi_tethering</span>
+                        </button>
+                        <button onclick="testMockNotification('new')" class="mobile-btn secondary ripple">
+                            <span>Create Test Data</span>
+                            <span class="material-icons">add</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -409,7 +1053,7 @@
                     <p class="text-xs text-gray-500 mt-1">Required for secure connections with client authentication</p>
                 </div>
                 
-                <button onclick="saveMqttConfig()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 touch-target">
+                <button onclick="saveMqttConfig()" class="scattered-btn primary ripple w-full sm:w-auto">
                     <span class="material-icons">save</span>
                     <span>Save & Connect</span>
                 </button>
@@ -551,16 +1195,16 @@
                         <p id="pushSubscriptionText" class="text-xs text-gray-500">Not Subscribed</p>
                     </div>
                 </div>
-                <div class="flex flex-wrap gap-3">
-                    <button id="requestPermissionBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2">
+                <div class="scattered-buttons">
+                    <button id="requestPermissionBtn" class="scattered-btn primary ripple">
                         <span class="material-icons">notifications</span>
                         <span>Request Permission</span>
                     </button>
-                    <button id="subscribePushBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2" disabled>
+                    <button id="subscribePushBtn" class="scattered-btn success ripple" disabled>
                         <span class="material-icons">link</span>
                         <span>Subscribe to Push</span>
                     </button>
-                    <button id="unsubscribePushBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2" disabled>
+                    <button id="unsubscribePushBtn" class="scattered-btn danger ripple" disabled>
                         <span class="material-icons">link_off</span>
                         <span>Unsubscribe</span>
                     </button>
@@ -570,8 +1214,8 @@
             <!-- Test Notifications -->
             <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Test Notifications</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <button onclick="testMockNotification('new')" class="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 transition-colors text-left">
+                <div class="scattered-buttons">
+                    <button onclick="testMockNotification('new')" class="scattered-btn primary ripple">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                                 <span class="material-icons text-blue-600">fiber_new</span>
@@ -583,7 +1227,7 @@
                         </div>
                     </button>
                     
-                    <button onclick="testMockNotification('pending')" class="p-4 border-2 border-yellow-200 rounded-lg hover:border-yellow-400 transition-colors text-left">
+                    <button onclick="testMockNotification('pending')" class="scattered-btn warning ripple">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
                                 <span class="material-icons text-yellow-600">pending</span>
@@ -595,7 +1239,7 @@
                         </div>
                     </button>
                     
-                    <button onclick="testMockNotification('approved')" class="p-4 border-2 border-green-200 rounded-lg hover:border-green-400 transition-colors text-left">
+                    <button onclick="testMockNotification('approved')" class="scattered-btn success ripple">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                                 <span class="material-icons text-green-600">check_circle</span>
@@ -607,7 +1251,7 @@
                         </div>
                     </button>
                     
-                    <button onclick="testMockNotification('rejected')" class="p-4 border-2 border-red-200 rounded-lg hover:border-red-400 transition-colors text-left">
+                    <button onclick="testMockNotification('rejected')" class="scattered-btn danger ripple">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
                                 <span class="material-icons text-red-600">cancel</span>
@@ -620,7 +1264,7 @@
                     </button>
                 </div>
                 
-                <button id="sendHeartbeatBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-medium flex items-center justify-center space-x-2">
+                <button id="sendHeartbeatBtn" class="scattered-btn primary ripple w-full">
                     <span class="material-icons">favorite</span>
                     <span>Send Heartbeat Push Notification</span>
                 </button>
@@ -648,15 +1292,18 @@
                             <span id="bannerDismissedStatus" class="font-medium text-gray-600">-</span>
                         </div>
                     </div>
-                    <div class="flex space-x-3">
-                        <button id="forceShowBanner" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
-                            Force Show Banner
+                    <div class="scattered-buttons">
+                        <button id="forceShowBanner" class="scattered-btn primary ripple">
+                            <span class="material-icons">visibility</span>
+                            <span>Force Show Banner</span>
                         </button>
-                        <button id="checkInstallStatus" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium">
-                            Check Status
+                        <button id="checkInstallStatus" class="scattered-btn secondary ripple">
+                            <span class="material-icons">refresh</span>
+                            <span>Check Status</span>
                         </button>
-                        <button id="clearInstallData" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium">
-                            Clear Install Data
+                        <button id="clearInstallData" class="scattered-btn danger ripple">
+                            <span class="material-icons">delete</span>
+                            <span>Clear Install Data</span>
                         </button>
                     </div>
                 </div>
@@ -672,6 +1319,109 @@
                 <div id="subscriptionInfo" class="mt-4 hidden">
                     <p class="text-sm text-gray-600 mb-2">Current Subscription:</p>
                     <textarea id="subscriptionDisplay" class="w-full h-32 text-xs bg-gray-50 p-3 rounded border" readonly></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page hidden mt-6">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Settings</h2>
+                <p class="text-gray-600">Customize your app experience and preferences</p>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Display Settings -->
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <span class="material-icons mr-2">visibility</span>
+                        Display Settings
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-gray-900">Show Dashboard</p>
+                                <p class="text-sm text-gray-600">Display summary cards at the top</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="showDashboardToggle" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-gray-900">Auto Connect</p>
+                                <p class="text-sm text-gray-600">Automatically connect to MQTT on startup</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="autoConnectToggle" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notification Settings -->
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <span class="material-icons mr-2">notifications</span>
+                        Notification Settings
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-gray-900">Enable Notifications</p>
+                                <p class="text-sm text-gray-600">Show browser notifications for new messages</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="notificationsToggle" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-gray-900">Sound Alerts</p>
+                                <p class="text-sm text-gray-600">Play sound for new notifications</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="soundToggle" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Management -->
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <span class="material-icons mr-2">storage</span>
+                        Data Management
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-gray-900">Clear All Data</p>
+                                <p class="text-sm text-gray-600">Remove all saved notifications and settings</p>
+                            </div>
+                            <button onclick="clearAllData()" class="scattered-btn danger ripple">
+                                <span class="material-icons">delete_forever</span>
+                                <span>Clear All</span>
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-gray-900">Export Data</p>
+                                <p class="text-sm text-gray-600">Download notifications as JSON file</p>
+                            </div>
+                            <button onclick="exportData()" class="scattered-btn secondary ripple">
+                                <span class="material-icons">download</span>
+                                <span>Export</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -760,12 +1510,101 @@
     <!-- Toast Container -->
     <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
     
+
+
     <!-- Bottom Sheet for Mobile Actions -->
     <div id="actionSheet" class="fixed inset-x-0 bottom-0 bg-white rounded-t-2xl shadow-2xl border-t transform translate-y-full transition-transform duration-300 z-50 hidden">
         <div class="p-4">
             <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4"></div>
             <div id="actionSheetContent" class="space-y-3">
                 <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <span class="material-icons mr-3 text-blue-600">help</span>
+                        Getting Started
+                    </h2>
+                    <button onclick="hideHelpModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Close help">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h3 class="font-semibold text-blue-900 mb-2">Welcome to Morph Messaging!</h3>
+                        <p class="text-blue-800 text-sm">This app helps you manage real-time notifications from your MQTT broker. Here's how to get started:</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-blue-600 text-sm font-bold">1</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Configure MQTT Connection</h4>
+                                <p class="text-gray-600 text-sm">Go to the Config page and set up your MQTT broker details. You'll need the broker URL, topic, and optionally username/password.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-blue-600 text-sm font-bold">2</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Enable Push Notifications</h4>
+                                <p class="text-gray-600 text-sm">Visit the Test page to subscribe to push notifications. This allows you to receive notifications even when the app is closed.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-blue-600 text-sm font-bold">3</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Monitor Live Notifications</h4>
+                                <p class="text-gray-600 text-sm">The Live page shows real-time notifications as they arrive. You can approve, reject, or view details of each notification.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-blue-600 text-sm font-bold">4</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Browse History</h4>
+                                <p class="text-gray-600 text-sm">The History page lets you search and filter through past notifications. Use the search bar and status filter to find specific notifications.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-900 mb-2">Keyboard Shortcuts</h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div><kbd class="bg-white px-2 py-1 rounded border">Ctrl+1</kbd> Live</div>
+                            <div><kbd class="bg-white px-2 py-1 rounded border">Ctrl+2</kbd> History</div>
+                            <div><kbd class="bg-white px-2 py-1 rounded border">Ctrl+3</kbd> Config</div>
+                            <div><kbd class="bg-white px-2 py-1 rounded border">Ctrl+4</kbd> Test</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mobile-button-group mt-6 pt-6 border-t">
+                    <button onclick="hideHelpModal()" class="mobile-btn secondary ripple">
+                        <span>Got it</span>
+                        <span class="material-icons">check</span>
+                    </button>
+                    <button onclick="showPage('config'); hideHelpModal()" class="mobile-btn primary ripple">
+                        <span>Configure Now</span>
+                        <span class="material-icons">settings</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -785,8 +1624,15 @@
             cert: null,
             key: null
         };
+        let settings = {
+            showDashboard: false,
+            autoConnect: true,
+            notificationsEnabled: true,
+            soundEnabled: false,
+            theme: 'light'
+        };
         let mqttConfig = {
-            broker: 'wss://broker.emqx.io:8084/mqtt',
+            broker: 'wss://mqtt.morpherp.com:9091/mqtt',
             topic: 'notifications/joborders',
             responseTopic: 'responses/joborders',
             clientId: 'notification-viewer-' + Math.random().toString(16).substr(2, 8),
@@ -802,12 +1648,14 @@
         function init() {
             console.log('🚀 Initializing Morph Messaging...');
             
+            loadSettings();
             loadMqttConfig();
             loadCertificates();
             setupEventListeners();
             updateCounts();
             updateAboutInfo();
             loadSavedNotifications();
+            updateDashboardVisibility();
             
             // Register service worker first
             registerServiceWorker();
@@ -823,7 +1671,9 @@
             
             // Delay MQTT connection slightly to ensure UI is ready
             setTimeout(() => {
-                connectMqtt();
+                if (settings.autoConnect) {
+                    connectMqtt();
+                }
             }, 500);
         }
         
@@ -1306,13 +2156,13 @@
         
         async function sendSubscriptionToServer(subscription) {
             try {
-                const response = await fetch(API_CONFIG.url('/api/subscribe', {  // ← Add full URL
+                const response = await fetch(API_CONFIG.url('/api/subscribe'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(subscription)
-                }));
+                });
                 
                 if (response.ok) {
                     console.log('✅ Subscription sent to server');
@@ -1333,12 +2183,12 @@
             btn.innerHTML = '<span class="material-icons animate-pulse">favorite</span><span>Sending...</span>';
             
             try {
-                const response = await fetch(API_CONFIG.url('/api/heartbeat', {  // ← Add full URL
+                const response = await fetch(API_CONFIG.url('/api/heartbeat'), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                }));
+                });
                 
                 if (response.ok) {
                     showToast('Heartbeat notification sent!', 'success');
@@ -1375,15 +2225,13 @@
             console.log('📄 Switching to page:', page);
             
             // Update navigation
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-blue-600', 'border-blue-600');
-                btn.classList.add('text-gray-600', 'border-transparent');
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
             
             const activeBtn = document.querySelector(`[data-page="${page}"]`);
             if (activeBtn) {
-                activeBtn.classList.remove('text-gray-600', 'border-transparent');
-                activeBtn.classList.add('text-blue-600', 'border-blue-600');
+                activeBtn.classList.add('active');
             }
             
             // Show page
@@ -1406,6 +2254,8 @@
                 updateInstallTestStatus();
             } else if (page === 'config') {
                 updateCertificateStatus();
+            } else if (page === 'settings') {
+                loadSettingsUI();
             }
         }
         
@@ -1583,14 +2433,74 @@
         }
         
         // Notification handling
-        function handleIncomingNotification(topic, message) {
-            try {
-                const notification = JSON.parse(message);
+        // function handleIncomingNotification(topic, message) {
+        //     try {
+        //         const notification = JSON.parse(message);
                 
-                // Add metadata
-                notification.id = Date.now() + Math.random();
-                notification.timestamp = new Date().toISOString();
-                notification.status = notification.status || 'new';
+        //         // Add metadata
+        //         notification.id = Date.now() + Math.random();
+        //         notification.timestamp = new Date().toISOString();
+        //         notification.status = notification.status || 'new';
+                
+        //         // Add to notifications array
+        //         notifications.unshift(notification);
+                
+        //         // Limit to 1000 notifications
+        //         if (notifications.length > 1000) {
+        //             notifications = notifications.slice(0, 1000);
+        //         }
+                
+        //         // Save to localStorage
+        //         localStorage.setItem('notifications', JSON.stringify(notifications));
+                
+        //         // Update UI
+        //         if (currentPage === 'live') {
+        //             displayLiveNotifications();
+        //         }
+        //         updateCounts();
+        //         updateLastUpdated();
+                
+        //         // Show browser notification
+        //         showBrowserNotification(notification);
+                
+        //         // Show toast
+        //         showToast(`New notification: ${notification.title || 'Job Order'}`, 'info');
+                
+        //     } catch (error) {
+        //         console.error('❌ Error parsing notification:', error);
+        //         showToast('Received invalid notification format', 'error');
+        //     }
+        // }
+        function handleIncomingNotification(topic, message, properties = {}) {
+            try {
+                let notification = {};
+                
+                // Try to parse JSON payload
+                try {
+                    notification = JSON.parse(message);
+                } catch (e) {
+                    // If message is not JSON, treat as plain text
+                    notification = { message: message };
+                }
+                
+                // Extract metadata from MQTT user properties (simulated from topic structure)
+                const extractedProps = extractMqttProperties(topic, properties);
+                
+                // Merge properties with notification data
+                notification = {
+                    ...notification,
+                    ...extractedProps,
+                    id: Date.now() + Math.random(),
+                    timestamp: extractedProps.timestamp || new Date().toISOString(),
+                    status: notification.status || 'new',
+                    type: extractedProps.type || 'notification',
+                    formType: extractedProps.formType || null,
+                    sender: extractedProps.sender || 'unknown',
+                    action: extractedProps.action || 'info',
+                    companyGuid: extractedProps.companyGuid || null,
+                    employeeGuid: extractedProps.employeeGuid || null,
+                    priority: notification.priority || 'medium'
+                };
                 
                 // Add to notifications array
                 notifications.unshift(notification);
@@ -1613,13 +2523,39 @@
                 // Show browser notification
                 showBrowserNotification(notification);
                 
-                // Show toast
-                showToast(`New notification: ${notification.title || 'Job Order'}`, 'info');
+                // Show toast with better formatting
+                const title = notification.title || notification.formName || 'New Notification';
+                const actionText = notification.action === 'request-approval' ? 'Approval Required' : 'Info';
+                showToast(`${actionText}: ${title}`, notification.action === 'request-approval' ? 'warning' : 'info');
                 
             } catch (error) {
                 console.error('❌ Error parsing notification:', error);
                 showToast('Received invalid notification format', 'error');
             }
+        }
+        
+        function extractMqttProperties(topic, properties = {}) {
+            // Extract company and employee GUIDs from topic structure
+            const topicParts = topic.split('/');
+            let companyGuid = null;
+            let employeeGuid = null;
+            
+            // Find GUID patterns in topic
+            topicParts.forEach(part => {
+                if (part.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+                    if (!companyGuid) {
+                        companyGuid = part;
+                    } else if (!employeeGuid) {
+                        employeeGuid = part;
+                    }
+                }
+            });
+            
+            return {
+                companyGuid,
+                employeeGuid,
+                ...properties // Include any passed properties
+            };
         }
         
         function displayLiveNotifications() {
@@ -1628,12 +2564,22 @@
             
             if (recent.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="material-icons text-gray-400 text-3xl">wifi_tethering</span>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <span class="material-icons text-3xl">wifi_tethering</span>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">No notifications yet</h3>
-                        <p class="text-gray-500">Waiting for incoming notifications from the MQTT broker...</p>
+                        <h3 class="empty-state-title">No notifications yet</h3>
+                        <p class="empty-state-description">Waiting for incoming notifications from the MQTT broker. Make sure your MQTT connection is configured and active.</p>
+                        <div class="empty-state-actions">
+                            <button onclick="showPage('config')" class="btn-primary">
+                                <span class="material-icons mr-2">settings</span>
+                                Configure MQTT
+                            </button>
+                            <button onclick="testMockNotification('new')" class="btn-secondary">
+                                <span class="material-icons mr-2">bug_report</span>
+                                Test Notification
+                            </button>
+                        </div>
                     </div>
                 `;
                 return;
@@ -1660,12 +2606,22 @@
             
             if (filtered.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="material-icons text-gray-400 text-3xl">history</span>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <span class="material-icons text-3xl">search</span>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">No notifications found</h3>
-                        <p class="text-gray-500">Try adjusting your search or filter criteria</p>
+                        <h3 class="empty-state-title">No notifications found</h3>
+                        <p class="empty-state-description">Try adjusting your search or filter criteria. You can also create test notifications to see how the app works.</p>
+                                            <div class="mobile-button-group">
+                        <button onclick="document.getElementById('searchInput').value = ''; document.getElementById('statusFilter').value = ''; displayHistoryNotifications()" class="mobile-btn primary ripple">
+                            <span>Clear Filters</span>
+                            <span class="material-icons">clear</span>
+                        </button>
+                        <button onclick="testMockNotification('new')" class="mobile-btn secondary ripple">
+                            <span>Create Test Data</span>
+                            <span class="material-icons">add</span>
+                        </button>
+                    </div>
                     </div>
                 `;
                 return;
@@ -1747,22 +2703,22 @@
                         ${notification.content || notification.message || 'No content available'}
                     </div>
                     
-                    <div class="flex flex-wrap gap-2">
+                    <div class="scattered-buttons">
                         ${(notification.status === 'pending' || notification.status === 'new') ? `
                             <button onclick="respondToNotification('${notification.id}', 'approved')" 
-                                class="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors touch-target">
-                                <span class="material-icons text-sm">check</span>
+                                class="scattered-btn success ripple">
+                                <span class="material-icons">check</span>
                                 <span>Approve</span>
                             </button>
                             <button onclick="respondToNotification('${notification.id}', 'rejected')" 
-                                class="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors touch-target">
-                                <span class="material-icons text-sm">close</span>
+                                class="scattered-btn danger ripple">
+                                <span class="material-icons">close</span>
                                 <span>Reject</span>
                             </button>
                         ` : ''}
                         <button onclick="viewNotificationDetails('${notification.id}')" 
-                            class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors touch-target">
-                            <span class="material-icons text-sm">visibility</span>
+                            class="scattered-btn secondary ripple">
+                            <span class="material-icons">visibility</span>
                             <span>Details</span>
                         </button>
                     </div>
@@ -1883,6 +2839,34 @@ ${notification.content || notification.message || 'No content available'}
                 sheet.classList.add('hidden');
             }, 300);
         }
+
+
+
+        // Help Modal Functions
+        function showHelpModal() {
+            const modal = document.getElementById('helpModal');
+            modal.classList.remove('hidden');
+            modal.style.animation = 'fadeIn 0.3s ease-out';
+        }
+
+        function hideHelpModal() {
+            const modal = document.getElementById('helpModal');
+            modal.style.animation = 'fadeIn 0.3s ease-out reverse';
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Check if this is first visit and show help
+        function checkFirstVisit() {
+            const hasVisited = localStorage.getItem('hasVisitedBefore');
+            if (!hasVisited) {
+                setTimeout(() => {
+                    showHelpModal();
+                    localStorage.setItem('hasVisitedBefore', 'true');
+                }, 2000); // Show after 2 seconds
+            }
+        }
         
         // Test mock notifications
         function testMockNotification(status) {
@@ -1996,23 +2980,24 @@ ${notification.content || notification.message || 'No content available'}
                 'warning': 'warning'
             };
             
-            toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-3 max-w-sm slide-up`;
+            toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-3 max-w-sm slide-up toast toast-${type}`;
             toast.innerHTML = `
                 <span class="material-icons">${icons[type]}</span>
                 <span class="flex-1">${message}</span>
-                <button onclick="this.parentElement.remove()" class="ml-2 p-1 hover:bg-white/20 rounded">
+                <button onclick="this.parentElement.remove()" class="ml-2 p-1 hover:bg-white/20 rounded transition-colors" aria-label="Close notification">
                     <span class="material-icons text-sm">close</span>
                 </button>
             `;
             
             container.appendChild(toast);
             
+            // Auto-dismiss after 5 seconds
             setTimeout(() => {
                 if (toast.parentElement) {
                     toast.style.animation = 'slideUp 0.3s ease-out reverse';
                     setTimeout(() => toast.remove(), 300);
                 }
-            }, 4000);
+            }, 5000);
         }
         
         function showBrowserNotification(notification) {
@@ -2056,6 +3041,142 @@ ${notification.content || notification.message || 'No content available'}
             }
         }
 
+        // Settings Management
+        function loadSettings() {
+            const saved = localStorage.getItem('appSettings');
+            if (saved) {
+                try {
+                    settings = { ...settings, ...JSON.parse(saved) };
+                    console.log('⚙️ Settings loaded from storage');
+                } catch (error) {
+                    console.error('❌ Error loading settings:', error);
+                }
+            }
+        }
+
+        function saveSettings() {
+            try {
+                localStorage.setItem('appSettings', JSON.stringify(settings));
+                console.log('⚙️ Settings saved to storage');
+            } catch (error) {
+                console.error('❌ Error saving settings:', error);
+                showToast('Failed to save settings', 'error');
+            }
+        }
+
+        function updateSetting(key, value) {
+            settings[key] = value;
+            saveSettings();
+            
+            // Apply setting changes
+            switch (key) {
+                case 'showDashboard':
+                    updateDashboardVisibility();
+                    break;
+                case 'autoConnect':
+                    if (value && !mqttClient?.connected) {
+                        connectMqtt();
+                    } else if (!value && mqttClient?.connected) {
+                        mqttClient.end();
+                    }
+                    break;
+                case 'notificationsEnabled':
+                    updateNotificationSettings();
+                    break;
+                case 'theme':
+                    updateTheme();
+                    break;
+            }
+        }
+
+        function updateDashboardVisibility() {
+            const dashboard = document.querySelector('.summary-grid');
+            if (dashboard) {
+                if (settings.showDashboard) {
+                    dashboard.style.display = 'grid';
+                } else {
+                    dashboard.style.display = 'none';
+                }
+            }
+        }
+
+        function updateNotificationSettings() {
+            if (!settings.notificationsEnabled) {
+                // Disable browser notifications
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    // Note: We can't revoke permission, but we can stop showing notifications
+                    console.log('🔕 Notifications disabled by user setting');
+                }
+            }
+        }
+
+        function updateTheme() {
+            document.documentElement.setAttribute('data-theme', settings.theme);
+        }
+
+        function loadSettingsUI() {
+            // Update toggle states based on current settings
+            document.getElementById('showDashboardToggle').checked = settings.showDashboard;
+            document.getElementById('autoConnectToggle').checked = settings.autoConnect;
+            document.getElementById('notificationsToggle').checked = settings.notificationsEnabled;
+            document.getElementById('soundToggle').checked = settings.soundEnabled;
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                // Clear notifications
+                notifications = [];
+                localStorage.removeItem('notifications');
+                
+                // Clear settings (except theme)
+                const theme = settings.theme;
+                settings = {
+                    showDashboard: false,
+                    autoConnect: true,
+                    notificationsEnabled: true,
+                    soundEnabled: false,
+                    theme: theme
+                };
+                saveSettings();
+                
+                // Clear certificates
+                certificates = { ca: null, cert: null, key: null };
+                localStorage.removeItem('mqttCertificates');
+                
+                // Clear MQTT config
+                localStorage.removeItem('mqttConfig');
+                
+                // Update UI
+                updateCounts();
+                updateDashboardVisibility();
+                updateCertificateStatus();
+                
+                showToast('All data cleared successfully', 'success');
+            }
+        }
+
+        function exportData() {
+            const data = {
+                notifications: notifications,
+                settings: settings,
+                mqttConfig: mqttConfig,
+                certificates: certificates,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `morph-messaging-export-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Data exported successfully', 'success');
+        }
+
         // Install prompt handling
         function setupInstallPrompt() {
             // Handle beforeinstallprompt
@@ -2091,7 +3212,7 @@ ${notification.content || notification.message || 'No content available'}
         // Event listeners
         function setupEventListeners() {
             // Navigation
-            document.querySelectorAll('.nav-btn').forEach(btn => {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const page = btn.getAttribute('data-page');
                     showPage(page);
@@ -2122,6 +3243,23 @@ ${notification.content || notification.message || 'No content available'}
             // Search and filter
             document.getElementById('searchInput').addEventListener('input', displayHistoryNotifications);
             document.getElementById('statusFilter').addEventListener('change', displayHistoryNotifications);
+            
+            // Settings toggles
+            document.getElementById('showDashboardToggle').addEventListener('change', (e) => {
+                updateSetting('showDashboard', e.target.checked);
+            });
+            
+            document.getElementById('autoConnectToggle').addEventListener('change', (e) => {
+                updateSetting('autoConnect', e.target.checked);
+            });
+            
+            document.getElementById('notificationsToggle').addEventListener('change', (e) => {
+                updateSetting('notificationsEnabled', e.target.checked);
+            });
+            
+            document.getElementById('soundToggle').addEventListener('change', (e) => {
+                updateSetting('soundEnabled', e.target.checked);
+            });
             
             // Push notification buttons
             document.getElementById('requestPermissionBtn').addEventListener('click', requestNotificationPermission);
@@ -2220,6 +3358,7 @@ ${notification.content || notification.message || 'No content available'}
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🌟 DOM loaded, initializing app...');
             init();
+            checkFirstVisit();
         });
         
         // Global error handling
