@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-title" content="Morph Messaging">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
-    
+    <script src="heartbeat.js"></script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -37,6 +37,23 @@
                 }
             }
         }
+    </script>
+    <script>
+        // API Configuration
+        const API_CONFIG = {
+            // Detect if we're in development (different ports) or production (same origin)
+            BASE_URL: window.location.port === '8086' 
+                ? 'http://127.0.0.1:8085'  // Development
+                : '',  // Production - same origin
+            
+            // Helper function to build API URLs
+            url: function(path) {
+                return this.BASE_URL + path;
+            }
+        };
+        
+        // Make it globally available
+        window.API_CONFIG = API_CONFIG;
     </script>
     
     <style>
@@ -145,6 +162,23 @@
         .notification-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Certificate upload area */
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .drop-zone.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        
+        .cert-uploaded {
+            background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+            border-color: #10b981;
         }
     </style>
 </head>
@@ -327,7 +361,12 @@
                 <p class="text-gray-600">Configure your MQTT broker connection settings</p>
             </div>
             
-            <div class="bg-white rounded-xl shadow-sm border p-6">
+            <!-- Basic Configuration -->
+            <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <span class="material-icons mr-2">settings</span>
+                    Basic Settings
+                </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">MQTT Broker URL</label>
@@ -360,10 +399,122 @@
                             class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                 </div>
+                
+                <!-- TLS/SSL Toggle -->
+                <div class="mb-6">
+                    <label class="flex items-center space-x-3">
+                        <input id="enableTLS" type="checkbox" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
+                        <span class="text-sm font-medium text-gray-700">Enable TLS/SSL with Client Certificates</span>
+                    </label>
+                    <p class="text-xs text-gray-500 mt-1">Required for secure connections with client authentication</p>
+                </div>
+                
                 <button onclick="saveMqttConfig()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 touch-target">
                     <span class="material-icons">save</span>
                     <span>Save & Connect</span>
                 </button>
+            </div>
+            
+            <!-- Certificate Configuration -->
+            <div id="certificateSection" class="bg-white rounded-xl shadow-sm border p-6 hidden">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <span class="material-icons mr-2">security</span>
+                    Client Certificates
+                </h3>
+                <p class="text-sm text-gray-600 mb-6">Upload your MQTT client certificates for secure authentication. All certificates are stored locally in your browser.</p>
+                
+                <!-- Certificate Upload Areas -->
+                <div class="space-y-6">
+                    <!-- CA Certificate -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            CA Certificate (ca.pem)
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <div id="caDropZone" class="drop-zone p-6 text-center cursor-pointer">
+                            <input type="file" id="caFileInput" accept=".pem,.crt,.cer" class="hidden">
+                            <div id="caUploadContent">
+                                <span class="material-icons text-4xl text-gray-400 mb-2">cloud_upload</span>
+                                <p class="text-gray-600 mb-1">Drop CA certificate here or click to browse</p>
+                                <p class="text-xs text-gray-500">Accepts .pem, .crt, .cer files</p>
+                            </div>
+                            <div id="caUploadedContent" class="hidden">
+                                <span class="material-icons text-4xl text-green-600 mb-2">check_circle</span>
+                                <p class="text-green-700 font-medium" id="caFileName">CA Certificate uploaded</p>
+                                <button type="button" onclick="removeCertificate('ca')" class="text-red-600 hover:text-red-700 text-sm mt-2">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Client Certificate -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Client Certificate (cert.pem)
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <div id="certDropZone" class="drop-zone p-6 text-center cursor-pointer">
+                            <input type="file" id="certFileInput" accept=".pem,.crt,.cer" class="hidden">
+                            <div id="certUploadContent">
+                                <span class="material-icons text-4xl text-gray-400 mb-2">cloud_upload</span>
+                                <p class="text-gray-600 mb-1">Drop client certificate here or click to browse</p>
+                                <p class="text-xs text-gray-500">Accepts .pem, .crt, .cer files</p>
+                            </div>
+                            <div id="certUploadedContent" class="hidden">
+                                <span class="material-icons text-4xl text-green-600 mb-2">check_circle</span>
+                                <p class="text-green-700 font-medium" id="certFileName">Client Certificate uploaded</p>
+                                <button type="button" onclick="removeCertificate('cert')" class="text-red-600 hover:text-red-700 text-sm mt-2">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Client Private Key -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Client Private Key (key.pem)
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <div id="keyDropZone" class="drop-zone p-6 text-center cursor-pointer">
+                            <input type="file" id="keyFileInput" accept=".pem,.key" class="hidden">
+                            <div id="keyUploadContent">
+                                <span class="material-icons text-4xl text-gray-400 mb-2">cloud_upload</span>
+                                <p class="text-gray-600 mb-1">Drop private key here or click to browse</p>
+                                <p class="text-xs text-gray-500">Accepts .pem, .key files</p>
+                            </div>
+                            <div id="keyUploadedContent" class="hidden">
+                                <span class="material-icons text-4xl text-green-600 mb-2">check_circle</span>
+                                <p class="text-green-700 font-medium" id="keyFileName">Private Key uploaded</p>
+                                <button type="button" onclick="removeCertificate('key')" class="text-red-600 hover:text-red-700 text-sm mt-2">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Certificate Status -->
+                <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="text-sm font-medium text-gray-900 mb-2">Certificate Status</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">CA Certificate:</span>
+                            <span id="caStatus" class="text-red-600">Not uploaded</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Client Certificate:</span>
+                            <span id="certStatus" class="text-red-600">Not uploaded</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Private Key:</span>
+                            <span id="keyStatus" class="text-red-600">Not uploaded</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Clear All Certificates -->
+                <div class="mt-6 pt-6 border-t">
+                    <button onclick="clearAllCertificates()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2">
+                        <span class="material-icons">delete</span>
+                        <span>Clear All Certificates</span>
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -475,6 +626,42 @@
                 </button>
             </div>
             
+            <!-- PWA Install Test -->
+            <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">PWA Install Testing</h3>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Install Prompt Available:</span>
+                            <span id="installPromptStatus" class="font-medium text-red-600">No</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Already Installed:</span>
+                            <span id="alreadyInstalledStatus" class="font-medium text-red-600">No</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Standalone Mode:</span>
+                            <span id="standaloneModeStatus" class="font-medium text-red-600">No</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Banner Dismissed:</span>
+                            <span id="bannerDismissedStatus" class="font-medium text-gray-600">-</span>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="forceShowBanner" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                            Force Show Banner
+                        </button>
+                        <button id="checkInstallStatus" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium">
+                            Check Status
+                        </button>
+                        <button id="clearInstallData" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium">
+                            Clear Install Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- VAPID Info -->
             <div class="bg-white rounded-xl shadow-sm border p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">VAPID Configuration</h3>
@@ -505,11 +692,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex items-center space-x-3">
                             <span class="material-icons text-green-500">check_circle</span>
-                            <span class="text-gray-700">Data persistence</span>
+                            <span class="text-gray-700">Real-time MQTT notifications</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <span class="material-icons text-green-500">check_circle</span>
-                            <span class="text-gray-700">Real-time MQTT notifications</span>
+                            <span class="text-gray-700">TLS/SSL certificate support</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <span class="material-icons text-green-500">check_circle</span>
@@ -531,7 +718,10 @@
                             <span class="material-icons text-green-500">check_circle</span>
                             <span class="text-gray-700">Data persistence</span>
                         </div>
-                    </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="material-icons text-green-500">check_circle</span>
+                            <span class="text-gray-700">Client certificate authentication</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -543,7 +733,7 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-gray-600">Version:</span>
-                            <span class="font-medium">2.2.0</span>
+                            <span class="font-medium">2.3.0</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">Build Date:</span>
@@ -556,6 +746,10 @@
                         <div class="flex justify-between">
                             <span class="text-gray-600">PWA Support:</span>
                             <span id="pwaSupport" class="font-medium">Checking...</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">TLS Support:</span>
+                            <span id="tlsSupport" class="font-medium">Available</span>
                         </div>
                     </div>
                 </div>
@@ -586,13 +780,19 @@
         let currentPage = 'live';
         let deferredPrompt = null;
         let pushSubscription = null;
+        let certificates = {
+            ca: null,
+            cert: null,
+            key: null
+        };
         let mqttConfig = {
             broker: 'wss://broker.emqx.io:8084/mqtt',
             topic: 'notifications/joborders',
             responseTopic: 'responses/joborders',
             clientId: 'notification-viewer-' + Math.random().toString(16).substr(2, 8),
             username: '',
-            password: ''
+            password: '',
+            enableTLS: false
         };
 
         // VAPID public key for push notifications
@@ -603,6 +803,7 @@
             console.log('🚀 Initializing Morph Messaging...');
             
             loadMqttConfig();
+            loadCertificates();
             setupEventListeners();
             updateCounts();
             updateAboutInfo();
@@ -614,13 +815,16 @@
             // Setup push notifications
             checkPushNotificationStatus();
             
+            // Setup install prompt handling immediately
+            setupInstallPrompt();
+            
+            // Check if we should show install banner on load
+            checkInstallBannerConditions();
+            
             // Delay MQTT connection slightly to ensure UI is ready
             setTimeout(() => {
                 connectMqtt();
             }, 500);
-            
-            // Handle install prompt after service worker is ready
-            setTimeout(setupInstallPrompt, 1000);
         }
         
         function registerServiceWorker() {
@@ -643,6 +847,282 @@
                 .catch(error => {
                     console.error('❌ Service Worker registration failed:', error);
                 });
+            }
+        }
+
+        // Certificate Management
+        function loadCertificates() {
+            try {
+                const savedCerts = localStorage.getItem('mqttCertificates');
+                if (savedCerts) {
+                    certificates = JSON.parse(savedCerts);
+                    updateCertificateStatus();
+                    console.log('🔐 Certificates loaded from storage');
+                }
+            } catch (error) {
+                console.error('❌ Error loading certificates:', error);
+            }
+        }
+        
+        function saveCertificates() {
+            try {
+                localStorage.setItem('mqttCertificates', JSON.stringify(certificates));
+                console.log('🔐 Certificates saved to storage');
+            } catch (error) {
+                console.error('❌ Error saving certificates:', error);
+                showToast('Failed to save certificates', 'error');
+            }
+        }
+        
+        function setupCertificateUpload() {
+            const certTypes = ['ca', 'cert', 'key'];
+            
+            certTypes.forEach(type => {
+                const dropZone = document.getElementById(`${type}DropZone`);
+                const fileInput = document.getElementById(`${type}FileInput`);
+                
+                // Click to upload
+                dropZone.addEventListener('click', () => fileInput.click());
+                
+                // Drag and drop
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('dragover');
+                });
+                
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('dragover');
+                });
+                
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        handleCertificateUpload(type, files[0]);
+                    }
+                });
+                
+                // File input change
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        handleCertificateUpload(type, e.target.files[0]);
+                    }
+                });
+            });
+        }
+        
+        function handleCertificateUpload(type, file) {
+            // Validate file type
+            const validExtensions = type === 'key' ? ['.pem', '.key'] : ['.pem', '.crt', '.cer'];
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            
+            if (!validExtensions.includes(fileExtension)) {
+                showToast(`Invalid file type. Expected: ${validExtensions.join(', ')}`, 'error');
+                return;
+            }
+            
+            // Read file content
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target.result;
+                
+                // Basic validation for PEM format
+                if (!content.includes('-----BEGIN') || !content.includes('-----END')) {
+                    showToast('Invalid certificate format. Expected PEM format.', 'error');
+                    return;
+                }
+                
+                // Store certificate
+                certificates[type] = {
+                    name: file.name,
+                    content: content,
+                    uploadedAt: new Date().toISOString()
+                };
+                
+                saveCertificates();
+                updateCertificateUI(type);
+                updateCertificateStatus();
+                
+                showToast(`${type.toUpperCase()} certificate uploaded successfully!`, 'success');
+            };
+            
+            reader.onerror = () => {
+                showToast('Failed to read certificate file', 'error');
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function updateCertificateUI(type) {
+            const uploadContent = document.getElementById(`${type}UploadContent`);
+            const uploadedContent = document.getElementById(`${type}UploadedContent`);
+            const fileName = document.getElementById(`${type}FileName`);
+            const dropZone = document.getElementById(`${type}DropZone`);
+            
+            if (certificates[type]) {
+                uploadContent.classList.add('hidden');
+                uploadedContent.classList.remove('hidden');
+                fileName.textContent = certificates[type].name;
+                dropZone.classList.add('cert-uploaded');
+            } else {
+                uploadContent.classList.remove('hidden');
+                uploadedContent.classList.add('hidden');
+                dropZone.classList.remove('cert-uploaded');
+            }
+        }
+        
+        function updateCertificateStatus() {
+            const statuses = ['ca', 'cert', 'key'];
+            statuses.forEach(type => {
+                const statusElement = document.getElementById(`${type}Status`);
+                if (certificates[type]) {
+                    statusElement.textContent = 'Uploaded';
+                    statusElement.className = 'text-green-600';
+                } else {
+                    statusElement.textContent = 'Not uploaded';
+                    statusElement.className = 'text-red-600';
+                }
+                updateCertificateUI(type);
+            });
+        }
+        
+        function removeCertificate(type) {
+            certificates[type] = null;
+            saveCertificates();
+            updateCertificateUI(type);
+            updateCertificateStatus();
+            showToast(`${type.toUpperCase()} certificate removed`, 'info');
+        }
+        
+        function clearAllCertificates() {
+            if (confirm('Are you sure you want to remove all certificates? This action cannot be undone.')) {
+                certificates = { ca: null, cert: null, key: null };
+                saveCertificates();
+                updateCertificateStatus();
+                showToast('All certificates cleared', 'info');
+            }
+        }
+        
+        function validateCertificates() {
+            if (!mqttConfig.enableTLS) return true;
+            
+            const required = ['ca', 'cert', 'key'];
+            const missing = required.filter(type => !certificates[type]);
+            
+            if (missing.length > 0) {
+                showToast(`Missing certificates: ${missing.join(', ')}`, 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Install Banner Management
+        function checkInstallBannerConditions() {
+            // Don't show if already dismissed recently (within 7 days)
+            const dismissedTime = localStorage.getItem('installBannerDismissedTime');
+            if (dismissedTime) {
+                const daysSinceDismissed = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60 * 24);
+                if (daysSinceDismissed < 7) {
+                    console.log('📱 Install banner dismissed recently, not showing');
+                    return;
+                }
+            }
+            
+            // Don't show if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches || 
+                window.navigator.standalone === true) {
+                console.log('📱 App already installed, not showing banner');
+                return;
+            }
+            
+            // Show banner after a delay if deferredPrompt is available
+            setTimeout(() => {
+                if (deferredPrompt) {
+                    showInstallBanner();
+                } else {
+                    // Force show banner for testing/manual install
+                    console.log('📱 No install prompt available, showing manual banner');
+                    showInstallBanner();
+                }
+            }, 3000); // Show after 3 seconds
+        }
+        
+        function setupInstallPrompt() {
+            // Handle beforeinstallprompt
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('📱 Install prompt available');
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Update test page status
+                updateInstallTestStatus();
+                
+                // Show banner if conditions are met
+                checkInstallBannerConditions();
+            });
+            
+            // Handle app installation
+            window.addEventListener('appinstalled', () => {
+                dismissInstallBanner();
+                showToast('App installed successfully!', 'success');
+                console.log('✅ PWA was installed');
+                deferredPrompt = null;
+                updateInstallTestStatus();
+            });
+        }
+        
+        function showInstallBanner() {
+            const banner = document.getElementById('installBanner');
+            banner.classList.remove('hidden');
+            console.log('📱 Install banner shown');
+            updateInstallTestStatus();
+        }
+        
+        function dismissInstallBanner() {
+            const banner = document.getElementById('installBanner');
+            banner.classList.add('hidden');
+            localStorage.setItem('installBannerDismissed', 'true');
+            localStorage.setItem('installBannerDismissedTime', Date.now().toString());
+            console.log('📱 Install banner dismissed');
+            updateInstallTestStatus();
+        }
+        
+        function updateInstallTestStatus() {
+            // Install prompt available
+            const promptStatus = document.getElementById('installPromptStatus');
+            if (promptStatus) {
+                promptStatus.textContent = deferredPrompt ? 'Yes' : 'No';
+                promptStatus.className = deferredPrompt ? 'font-medium text-green-600' : 'font-medium text-red-600';
+            }
+            
+            // Already installed
+            const installedStatus = document.getElementById('alreadyInstalledStatus');
+            const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            if (installedStatus) {
+                installedStatus.textContent = isInstalled ? 'Yes' : 'No';
+                installedStatus.className = isInstalled ? 'font-medium text-green-600' : 'font-medium text-red-600';
+            }
+            
+            // Standalone mode
+            const standaloneStatus = document.getElementById('standaloneModeStatus');
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+            if (standaloneStatus) {
+                standaloneStatus.textContent = isStandalone ? 'Yes' : 'No';
+                standaloneStatus.className = isStandalone ? 'font-medium text-green-600' : 'font-medium text-red-600';
+            }
+            
+            // Banner dismissed
+            const bannerStatus = document.getElementById('bannerDismissedStatus');
+            const dismissedTime = localStorage.getItem('installBannerDismissedTime');
+            if (bannerStatus) {
+                if (dismissedTime) {
+                    const date = new Date(parseInt(dismissedTime));
+                    bannerStatus.textContent = date.toLocaleDateString();
+                } else {
+                    bannerStatus.textContent = 'Never';
+                }
             }
         }
 
@@ -722,14 +1202,21 @@
                 subText.textContent = 'Subscribed';
                 
                 // Show subscription details
-                document.getElementById('subscriptionInfo').classList.remove('hidden');
-                document.getElementById('subscriptionDisplay').value = JSON.stringify(pushSubscription, null, 2);
+                const subInfo = document.getElementById('subscriptionInfo');
+                const subDisplay = document.getElementById('subscriptionDisplay');
+                if (subInfo && subDisplay) {
+                    subInfo.classList.remove('hidden');
+                    subDisplay.value = JSON.stringify(pushSubscription, null, 2);
+                }
             } else {
                 subStatus.className = 'w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center bg-red-100';
                 subStatus.innerHTML = '<span class="material-icons text-red-600">link_off</span>';
                 subText.textContent = 'Not Subscribed';
                 
-                document.getElementById('subscriptionInfo').classList.add('hidden');
+                const subInfo = document.getElementById('subscriptionInfo');
+                if (subInfo) {
+                    subInfo.classList.add('hidden');
+                }
             }
             
             // Update button states
@@ -737,9 +1224,9 @@
             const subscribeBtn = document.getElementById('subscribePushBtn');
             const unsubscribeBtn = document.getElementById('unsubscribePushBtn');
             
-            requestBtn.disabled = permissionStatus === 'granted';
-            subscribeBtn.disabled = !(permissionStatus === 'granted' && !pushSubscription);
-            unsubscribeBtn.disabled = !pushSubscription;
+            if (requestBtn) requestBtn.disabled = permissionStatus === 'granted';
+            if (subscribeBtn) subscribeBtn.disabled = !(permissionStatus === 'granted' && !pushSubscription);
+            if (unsubscribeBtn) unsubscribeBtn.disabled = !pushSubscription;
         }
         
         async function requestNotificationPermission() {
@@ -819,13 +1306,13 @@
         
         async function sendSubscriptionToServer(subscription) {
             try {
-                const response = await fetch('/api/subscribe', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(subscription)
-                });
+                const response = await fetch(API_CONFIG.url('/api/subscribe', {  // ← Add full URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(subscription)
+                }));
                 
                 if (response.ok) {
                     console.log('✅ Subscription sent to server');
@@ -846,12 +1333,12 @@
             btn.innerHTML = '<span class="material-icons animate-pulse">favorite</span><span>Sending...</span>';
             
             try {
-                const response = await fetch('/api/heartbeat', {
+                const response = await fetch(API_CONFIG.url('/api/heartbeat', {  // ← Add full URL
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                });
+                }));
                 
                 if (response.ok) {
                     showToast('Heartbeat notification sent!', 'success');
@@ -865,49 +1352,6 @@
             
             btn.disabled = false;
             btn.innerHTML = originalText;
-        }
-        
-        // Test mock notifications
-        function testMockNotification(status) {
-            const mockNotifications = {
-                new: {
-                    title: 'New Job Order Received',
-                    content: 'A new job order #JO-2024-001 has been submitted and requires your attention.',
-                    jobOrderId: 'JO-2024-001',
-                    priority: 'high',
-                    status: 'new'
-                },
-                pending: {
-                    title: 'Job Order Pending Review',
-                    content: 'Job order #JO-2024-002 is awaiting your review and approval.',
-                    jobOrderId: 'JO-2024-002',
-                    priority: 'medium',
-                    status: 'pending'
-                },
-                approved: {
-                    title: 'Job Order Approved',
-                    content: 'Job order #JO-2024-003 has been approved and is now active.',
-                    jobOrderId: 'JO-2024-003',
-                    priority: 'low',
-                    status: 'approved'
-                },
-                rejected: {
-                    title: 'Job Order Rejected',
-                    content: 'Job order #JO-2024-004 has been rejected due to incomplete information.',
-                    jobOrderId: 'JO-2024-004',
-                    priority: 'medium',
-                    status: 'rejected'
-                }
-            };
-            
-            const mockData = mockNotifications[status];
-            if (mockData) {
-                // Simulate MQTT message
-                const message = JSON.stringify(mockData);
-                handleIncomingNotification('test/topic', message);
-                
-                showToast(`Test ${status} notification created!`, 'success');
-            }
         }
         
         // Utility function to convert VAPID key
@@ -959,6 +1403,9 @@
                 updateAboutInfo();
             } else if (page === 'test') {
                 updatePushStatus();
+                updateInstallTestStatus();
+            } else if (page === 'config') {
+                updateCertificateStatus();
             }
         }
         
@@ -983,6 +1430,10 @@
             document.getElementById('mqttClientId').value = mqttConfig.clientId || '';
             document.getElementById('mqttUsername').value = mqttConfig.username || '';
             document.getElementById('mqttPassword').value = mqttConfig.password || '';
+            document.getElementById('enableTLS').checked = mqttConfig.enableTLS || false;
+            
+            // Show/hide certificate section
+            toggleCertificateSection();
         }
         
         function saveMqttConfig() {
@@ -992,8 +1443,14 @@
                 responseTopic: document.getElementById('mqttResponseTopic').value || mqttConfig.responseTopic,
                 clientId: document.getElementById('mqttClientId').value || mqttConfig.clientId,
                 username: document.getElementById('mqttUsername').value || '',
-                password: document.getElementById('mqttPassword').value || ''
+                password: document.getElementById('mqttPassword').value || '',
+                enableTLS: document.getElementById('enableTLS').checked
             };
+            
+            // Validate certificates if TLS is enabled
+            if (mqttConfig.enableTLS && !validateCertificates()) {
+                return;
+            }
             
             localStorage.setItem('mqttConfig', JSON.stringify(mqttConfig));
             
@@ -1007,7 +1464,19 @@
             showToast('Configuration saved! Reconnecting...', 'success');
         }
         
-        // MQTT Connection
+        function toggleCertificateSection() {
+            const enableTLS = document.getElementById('enableTLS').checked;
+            const certificateSection = document.getElementById('certificateSection');
+            
+            if (enableTLS) {
+                certificateSection.classList.remove('hidden');
+                setupCertificateUpload();
+            } else {
+                certificateSection.classList.add('hidden');
+            }
+        }
+        
+        // MQTT Connection with Certificate Support
         function connectMqtt() {
             if (mqttClient && mqttClient.connected) {
                 console.log('🔗 MQTT already connected');
@@ -1029,6 +1498,22 @@
                     options.password = mqttConfig.password;
                 }
                 
+                // Add certificate options if TLS is enabled
+                if (mqttConfig.enableTLS && certificates.ca && certificates.cert && certificates.key) {
+                    console.log('🔐 Using client certificates for TLS connection');
+                    
+                    // Note: In browsers, client certificates are typically handled by the browser itself
+                    // For WebSocket connections, you might need to configure the server to request client certs
+                    // and the browser will prompt the user to select a certificate
+                    
+                    // For MQTT.js over WebSockets, certificate handling is limited
+                    // The certificates would typically be configured at the WebSocket server level
+                    console.warn('⚠️ Client certificate configuration for WebSocket MQTT is handled by the browser');
+                    
+                    // You might need to use a different approach depending on your MQTT broker setup
+                    // Some brokers support passing certificates via connection headers or query parameters
+                }
+                
                 mqttClient = mqtt.connect(mqttConfig.broker, options);
                 
                 mqttClient.on('connect', () => {
@@ -1042,7 +1527,8 @@
                             showToast('Failed to subscribe to topic', 'error');
                         } else {
                             console.log('📡 Subscribed to topic:', mqttConfig.topic);
-                            showToast('Connected to MQTT broker!', 'success');
+                            const tlsInfo = mqttConfig.enableTLS ? ' (with TLS)' : '';
+                            showToast(`Connected to MQTT broker${tlsInfo}!`, 'success');
                         }
                     });
                 });
@@ -1050,7 +1536,12 @@
                 mqttClient.on('error', (error) => {
                     console.error('❌ MQTT Error:', error);
                     updateMqttStatus(false);
-                    showToast('MQTT connection error', 'error');
+                    
+                    if (error.message.includes('certificate') || error.message.includes('TLS') || error.message.includes('SSL')) {
+                        showToast('TLS/Certificate error. Check your certificates.', 'error');
+                    } else {
+                        showToast('MQTT connection error', 'error');
+                    }
                 });
                 
                 mqttClient.on('close', () => {
@@ -1391,6 +1882,49 @@ ${notification.content || notification.message || 'No content available'}
             setTimeout(() => {
                 sheet.classList.add('hidden');
             }, 300);
+        }
+        
+        // Test mock notifications
+        function testMockNotification(status) {
+            const mockNotifications = {
+                new: {
+                    title: 'New Job Order Received',
+                    content: 'A new job order #JO-2024-001 has been submitted and requires your attention.',
+                    jobOrderId: 'JO-2024-001',
+                    priority: 'high',
+                    status: 'new'
+                },
+                pending: {
+                    title: 'Job Order Pending Review',
+                    content: 'Job order #JO-2024-002 is awaiting your review and approval.',
+                    jobOrderId: 'JO-2024-002',
+                    priority: 'medium',
+                    status: 'pending'
+                },
+                approved: {
+                    title: 'Job Order Approved',
+                    content: 'Job order #JO-2024-003 has been approved and is now active.',
+                    jobOrderId: 'JO-2024-003',
+                    priority: 'low',
+                    status: 'approved'
+                },
+                rejected: {
+                    title: 'Job Order Rejected',
+                    content: 'Job order #JO-2024-004 has been rejected due to incomplete information.',
+                    jobOrderId: 'JO-2024-004',
+                    priority: 'medium',
+                    status: 'rejected'
+                }
+            };
+            
+            const mockData = mockNotifications[status];
+            if (mockData) {
+                // Simulate MQTT message
+                const message = JSON.stringify(mockData);
+                handleIncomingNotification('test/topic', message);
+                
+                showToast(`Test ${status} notification created!`, 'success');
+            }
         }
         
         // Utility functions
