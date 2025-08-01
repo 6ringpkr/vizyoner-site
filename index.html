@@ -18,6 +18,23 @@
     <!-- Material Design Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
+    <script>
+        if (!firebase.apps.length) {
+            firebase.initializeApp({
+                apiKey: "AIzaSyDVaiieCsUphHyw4uYObvt9NhmUTbRtBQU",
+                authDomain: "visionaire-morph-portal.firebaseapp.com",
+                projectId: "visionaire-morph-portal",
+                storageBucket: "visionaire-morph-portal.appspot.com",
+                messagingSenderId: "451658222083",
+                appId: "1:451658222083:web:991c6012920b4b1d4cdc36",
+                measurementId: "G-7XNHY93JB3"
+            });
+        }
+
+        const messaging = firebase.messaging();
+    </script>
     
     <script>
         tailwind.config = {
