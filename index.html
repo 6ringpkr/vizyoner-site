@@ -2450,74 +2450,14 @@
         }
         
         // Notification handling
-        // function handleIncomingNotification(topic, message) {
-        //     try {
-        //         const notification = JSON.parse(message);
-                
-        //         // Add metadata
-        //         notification.id = Date.now() + Math.random();
-        //         notification.timestamp = new Date().toISOString();
-        //         notification.status = notification.status || 'new';
-                
-        //         // Add to notifications array
-        //         notifications.unshift(notification);
-                
-        //         // Limit to 1000 notifications
-        //         if (notifications.length > 1000) {
-        //             notifications = notifications.slice(0, 1000);
-        //         }
-                
-        //         // Save to localStorage
-        //         localStorage.setItem('notifications', JSON.stringify(notifications));
-                
-        //         // Update UI
-        //         if (currentPage === 'live') {
-        //             displayLiveNotifications();
-        //         }
-        //         updateCounts();
-        //         updateLastUpdated();
-                
-        //         // Show browser notification
-        //         showBrowserNotification(notification);
-                
-        //         // Show toast
-        //         showToast(`New notification: ${notification.title || 'Job Order'}`, 'info');
-                
-        //     } catch (error) {
-        //         console.error('❌ Error parsing notification:', error);
-        //         showToast('Received invalid notification format', 'error');
-        //     }
-        // }
-        function handleIncomingNotification(topic, message, properties = {}) {
+        function handleIncomingNotification(topic, message) {
             try {
-                let notification = {};
+                const notification = JSON.parse(message);
                 
-                // Try to parse JSON payload
-                try {
-                    notification = JSON.parse(message);
-                } catch (e) {
-                    // If message is not JSON, treat as plain text
-                    notification = { message: message };
-                }
-                
-                // Extract metadata from MQTT user properties (simulated from topic structure)
-                const extractedProps = extractMqttProperties(topic, properties);
-                
-                // Merge properties with notification data
-                notification = {
-                    ...notification,
-                    ...extractedProps,
-                    id: Date.now() + Math.random(),
-                    timestamp: extractedProps.timestamp || new Date().toISOString(),
-                    status: notification.status || 'new',
-                    type: extractedProps.type || 'notification',
-                    formType: extractedProps.formType || null,
-                    sender: extractedProps.sender || 'unknown',
-                    action: extractedProps.action || 'info',
-                    companyGuid: extractedProps.companyGuid || null,
-                    employeeGuid: extractedProps.employeeGuid || null,
-                    priority: notification.priority || 'medium'
-                };
+                // Add metadata
+                notification.id = Date.now() + Math.random();
+                notification.timestamp = new Date().toISOString();
+                notification.status = notification.status || 'new';
                 
                 // Add to notifications array
                 notifications.unshift(notification);
@@ -2540,16 +2480,76 @@
                 // Show browser notification
                 showBrowserNotification(notification);
                 
-                // Show toast with better formatting
-                const title = notification.title || notification.formName || 'New Notification';
-                const actionText = notification.action === 'request-approval' ? 'Approval Required' : 'Info';
-                showToast(`${actionText}: ${title}`, notification.action === 'request-approval' ? 'warning' : 'info');
+                // Show toast
+                showToast(`New notification: ${notification.title || 'Job Order'}`, 'info');
                 
             } catch (error) {
                 console.error('❌ Error parsing notification:', error);
                 showToast('Received invalid notification format', 'error');
             }
         }
+        // function handleIncomingNotification(topic, message, properties = {}) {
+        //     try {
+        //         let notification = {};
+                
+        //         // Try to parse JSON payload
+        //         try {
+        //             notification = JSON.parse(message);
+        //         } catch (e) {
+        //             // If message is not JSON, treat as plain text
+        //             notification = { message: message };
+        //         }
+                
+        //         // Extract metadata from MQTT user properties (simulated from topic structure)
+        //         const extractedProps = extractMqttProperties(topic, properties);
+                
+        //         // Merge properties with notification data
+        //         notification = {
+        //             ...notification,
+        //             ...extractedProps,
+        //             id: Date.now() + Math.random(),
+        //             timestamp: extractedProps.timestamp || new Date().toISOString(),
+        //             status: notification.status || 'new',
+        //             type: extractedProps.type || 'notification',
+        //             formType: extractedProps.formType || null,
+        //             sender: extractedProps.sender || 'unknown',
+        //             action: extractedProps.action || 'info',
+        //             companyGuid: extractedProps.companyGuid || null,
+        //             employeeGuid: extractedProps.employeeGuid || null,
+        //             priority: notification.priority || 'medium'
+        //         };
+                
+        //         // Add to notifications array
+        //         notifications.unshift(notification);
+                
+        //         // Limit to 1000 notifications
+        //         if (notifications.length > 1000) {
+        //             notifications = notifications.slice(0, 1000);
+        //         }
+                
+        //         // Save to localStorage
+        //         localStorage.setItem('notifications', JSON.stringify(notifications));
+                
+        //         // Update UI
+        //         if (currentPage === 'live') {
+        //             displayLiveNotifications();
+        //         }
+        //         updateCounts();
+        //         updateLastUpdated();
+                
+        //         // Show browser notification
+        //         showBrowserNotification(notification);
+                
+        //         // Show toast with better formatting
+        //         const title = notification.title || notification.formName || 'New Notification';
+        //         const actionText = notification.action === 'request-approval' ? 'Approval Required' : 'Info';
+        //         showToast(`${actionText}: ${title}`, notification.action === 'request-approval' ? 'warning' : 'info');
+                
+        //     } catch (error) {
+        //         console.error('❌ Error parsing notification:', error);
+        //         showToast('Received invalid notification format', 'error');
+        //     }
+        // }
         
         function extractMqttProperties(topic, properties = {}) {
             // Extract company and employee GUIDs from topic structure
